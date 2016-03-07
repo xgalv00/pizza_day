@@ -23,12 +23,12 @@ angular.module('confusionApp', ['ui.router'])
             })
 
             // route for the group list page
-            .state('app.group', {
-                url:'group',
+            .state('app.groups', {
+                url:'groups',
                 views: {
                     'content@': {
-                        templateUrl : 'views/group.html',
-                        controller  : 'AboutController'
+                        templateUrl : 'views/groups.html',
+                        controller  : 'GroupListController'
                     }
                 }
             })
@@ -45,11 +45,11 @@ angular.module('confusionApp', ['ui.router'])
             })
 
             // route for the user list page
-            .state('app.user', {
-                url: 'user',
+            .state('app.users', {
+                url: 'users',
                 views: {
                     'content@': {
-                        templateUrl : 'views/user.html',
+                        templateUrl : 'views/users.html',
                         controller  : 'MenuController'
                     }
                 }
@@ -57,11 +57,11 @@ angular.module('confusionApp', ['ui.router'])
 
             // route for the group detail page
             .state('app.groupdetail', {
-                url: 'group/:id',
+                url: 'groups/:id',
                 views: {
                     'content@': {
                         templateUrl : 'views/group_detail.html',
-                        controller  : 'DishDetailController'
+                        controller  : 'GroupDetailController'
                    }
                 }
             });
