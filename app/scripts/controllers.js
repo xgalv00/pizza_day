@@ -2,6 +2,18 @@
 
 angular.module('confusionApp')
 
+    .controller('GroupListController', ['$scope', 'groupListFactory', function($scope, groupListFactory){
+        $scope.groups = groupListFactory.getGroups();
+    }])
+
+    .controller('GroupDetailController', ['$scope', '$stateParams', 'menuFactory', function ($scope, $stateParams, menuFactory) {
+
+        var dish = menuFactory.getDish(parseInt($stateParams.id, 10));
+
+        $scope.dish = dish;
+
+    }])
+
     .controller('MenuController', ['$scope', 'menuFactory', function ($scope, menuFactory) {
 
         $scope.tab = 1;
@@ -68,14 +80,6 @@ angular.module('confusionApp')
         };
     }])
 
-    .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function ($scope, $stateParams, menuFactory) {
-
-        var dish = menuFactory.getDish(parseInt($stateParams.id, 10));
-
-        $scope.dish = dish;
-
-    }])
-
     .controller('DishCommentController', ['$scope', function ($scope) {
 
         $scope.mycomment = {rating: 5, comment: "", author: "", date: ""};
@@ -91,9 +95,6 @@ angular.module('confusionApp')
 
             $scope.mycomment = {rating: 5, comment: "", author: "", date: ""};
         };
-    }])
-    .controller('AboutController', ['$scope', 'corporateFactory', function ($scope, corporateFactory) {
-        $scope.leaders = corporateFactory.getLeaders();
     }])
     .controller('IndexController', ['$scope', 'corporateFactory', 'menuFactory', function ($scope, corporateFactory, menuFactory) {
         $scope.dish = menuFactory.getDish(3);

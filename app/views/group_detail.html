@@ -1,104 +1,53 @@
-
 <div class="container">
-    <div class="row row-content" ng-controller="DishDetailController">
+    <div class="row row-content" ng-controller="MenuController">
+
         <div class="col-xs-12">
-            <button class="btn btn-xs btn-primary pull-right"
-                    type="button" ui-sref="app.group">
-                    Back to Menu
+            <button ng-click="toggleDetails()" class="btn btn-xs btn-primary pull-right"                    type="button">
+                    {{showDetails ? 'Hide Details':'Show Details'}}
                 </button>
-            <div class="media">
-                <div class="media-left media-middle">
-                    <a href="#">
-                        <img class="media-object thumbnail" ng-src="{{dish.image}}" alt="Dish image">
-                    </a>
-                </div>
-                <div class="media-body">
-                    <h2 class="media-heading">{{dish.name}}
-                        <span class="label label-danger">{{dish.label}}</span>
-                        <span class="badge">{{dish.price | currency}}</span>
-                    </h2>
-
-                    <p>{{dish.description}}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-9 col-xs-offset-1">
-            <h4 class="col-xs-6 pull-left">Customer comments</h4>
-            <label for="ord">Sort by <input id="ord" ng-model="ord"> </label>
-            <blockquote ng-repeat="comment in dish.comments | orderBy : ord">
-                <p>{{comment.rating}} stars</p>
-
-                <p>{{comment.comment}}</p>
-                <footer>{{comment.author}}, {{comment.date | date : 'mediumDate'}}</footer>
-            </blockquote>
-        </div>
-        <div class="col-xs-9 col-xs-offset-1" ng-controller="DishCommentController">
-            <ul class="list-unstyled" ng-show="commentForm.$valid">
-                <p>{{comment.author}}</p>
-                <p>{{comment.rating}}</p>
-                <p>{{comment.comment}}</p>
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" ng-class="{active:isSelected(1)}">
+                    <a ng-click="select(1)"
+                       aria-controls="all menu"
+                       role="tab">The Menu</a></li>
+                <li role="presentation" ng-class="{active:isSelected(2)}">
+                    <a ng-click="select(2)"
+                       aria-controls="appetizers"
+                       role="tab">Appetizers</a></li>
+                <li role="presentation" ng-class="{active:isSelected(3)}">
+                    <a ng-click="select(3)"
+                       aria-controls="mains"
+                       role="tab">Mains</a></li>
+                <li role="presentation" ng-class="{active:isSelected(4)}">
+                    <a ng-click="select(4)"
+                       aria-controls="desserts"
+                       role="tab">Desserts</a></li>
             </ul>
-            <form class="form-horizontal" name="commentForm"
-                  ng-submit="submitComment()" novalidate>
-                <div class="form-group"
-                     ng-class="{'has-error has-feedback' : commentForm.author.$invalid && commentForm.author.$dirty, 'has-success has-feedback': commentForm.author.$valid && commentForm.author.$dirty}">
-                    <label for="author" class="col-sm-2 control-label">Your name*</label>
+            <div class="tab-content">
+                <ul class="media-list tab-pane fade in active"
+                    ng-repeat="dish in dishes | filter:filtText">
+                    <li>
+                        <div class="media">
+                            <div class="media-left media-middle">
+                                <a ui-sref="app.groupdetail({id: dish._id})">
+                                    <img class="media-object img-thumbnail"
+                                         ng-src="{{dish.image}}" alt="Uthappizza">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h2 class="media-heading">{{dish.name}}
+                                    <span class="label label-danger">{{dish.label}}</span>
+                                    <span class="badge">{{dish.price | currency}}</span></h2>
 
-                    <div class="col-sm-8">
-                        <input class="form-control" type="text" id="author" name="author"
-                               placeholder="Enter your name" aria-describedby="helpBlockAuthor" ng-model="comment.author" required>
-                        <span ng-show="commentForm.author.$invalid && commentForm.author.$dirty"
-                          class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                        <span ng-show="commentForm.author.$valid && commentForm.author.$dirty"
-                          class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                        <span ng-show="commentForm.author.$invalid && commentForm.author.$dirty"
-                              class="help-block">Enter your name</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Number of stars</label>
-
-                    <div class="col-sm-8">
-                        <label class="radio-inline">
-                            <input type="radio" ng-model="comment.rating" value="1">1
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" ng-model="comment.rating" value="2">2
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" ng-model="comment.rating" value="3">3
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" ng-model="comment.rating" value="4">4
-                        </label>
-                        <label class="radio-inline">
-                            <input type="radio" ng-model="comment.rating" value="5">5
-                        </label>
-                    </div>
-                </div>
-
-
-                <div class="form-group"
-                     ng-class="{'has-error has-feedback' : commentForm.comment.$invalid && commentForm.comment.$dirty, 'has-success has-feedback': commentForm.comment.$valid && commentForm.comment.$dirty}">
-                    <label for="comment" class="col-sm-2 control-label">Your comments*</label>
-
-                    <div class="col-sm-8">
-                        <textarea class="form-control" id="comment" name="comment" ng-model="comment.comment" aria-describedby="helpBlockComment" required></textarea>
-                        <span ng-show="commentForm.comment.$invalid && commentForm.comment.$dirty"
-                              class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                        <span ng-show="commentForm.comment.$valid && commentForm.comment.$dirty"
-                          class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                        <span ng-show="commentForm.comment.$invalid && commentForm.comment.$dirty" id="helpBlockComment" class="help-block">Please enter your name</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-8 col-sm-offset-2">
-                        <button type="submit" class="btn btn-primary pull-right" ng-disabled="commentForm.$invalid">Submit Comment</button>
-                    </div>
-                </div>
-            </form>
+                                <p ng-show="showDetails">{{dish.description}}</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 
 </div>
+
+

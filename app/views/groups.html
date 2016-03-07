@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="row row-content" ng-controller="GroupListController">
+        <div class="col-xs-12">
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">
+                    <h3 class="panel-title pull-left">Available groups</h3>
+                    <button class="btn btn-default pull-right">Add group</button>
+                    <div class="clearfix"></div>
+                </div>
+                <ul class="media-list list-group">
+                    <li ng-repeat="group in groups" class="list-group-item">
+                        <a class="remove-link-decoration" ui-sref="app.groupdetail({id: group._id})">
+                            <div class="media">
+                                <div class="media-left media-middle">
+
+                                    <img class="media-object img-thumbnail"
+                                         ng-src="{{group.image}}" alt="{{group.name}}">
+
+                                </div>
+                                <div class="media-body">
+                                    <h2 class="media-heading">{{group.name}}</h2>
+
+                                    <p class="pull-right" title="Date of next event in this group">{{group.event.date | date:'MMM d, y'}}</p>
+
+                                    <p title="Group owner's email">{{group.owner.email}}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+
+

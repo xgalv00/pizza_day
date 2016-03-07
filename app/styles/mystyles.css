@@ -69,3 +69,22 @@ body {
     top: 50%;
     transform: translateY(-50%);
 }
+
+.panel-heading h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: normal;
+    width: 80%;
+    padding-top: 8px;
+}
+
+a.remove-link-decoration{
+    color: #333;
+    text-decoration: none;
+}
+
+a.remove-link-decoration:hover{
+    color: #333;
+    text-decoration: none;
+}
