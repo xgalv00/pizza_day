@@ -6,13 +6,19 @@ angular.module('confusionApp')
         $scope.groups = groupListFactory.getGroups();
     }])
 
-    .controller('GroupDetailController', ['$scope', '$stateParams', 'menuFactory', function ($scope, $stateParams, menuFactory) {
+    .controller('GroupDetailController', ['$scope', '$stateParams', 'groupListFactory', 'groupDetailFactory',
+        function ($scope, $stateParams, groupListFactory, groupDetailFactory) {
+            //TODO add group validation
+            var group_id = parseInt($stateParams.id, 10);
 
-        var dish = menuFactory.getDish(parseInt($stateParams.id, 10));
+            $scope.group = groupListFactory.getGroup(group_id);
+            $scope.event = groupDetailFactory.getEvent();
+            $scope.users = groupDetailFactory.getUsers();
+            $scope.dishes = groupDetailFactory.getDishes();
+            $scope.coupons = groupDetailFactory.getCoupons();
 
-        $scope.dish = dish;
-
-    }])
+        }
+    ])
 
     .controller('MenuController', ['$scope', 'menuFactory', function ($scope, menuFactory) {
 

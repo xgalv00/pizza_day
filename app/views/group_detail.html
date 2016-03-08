@@ -7,27 +7,51 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
+
+                <div class="panel panel-default event-panel">
                     <div class="panel-heading cursor-pointer" role="tab" id="headingEvent" data-toggle="collapse"
                          data-parent="#accordion" data-target="#event" aria-expanded="true" aria-controls="collapseEvent">
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-4">
                         <h4 class="panel-title">
-                                Next event
-                        </h4>
+                            Next event
+                        </h4></div>
+                            <div class="col-sm-4 hidden-xs" title="Confirmed/total users">2/3</div>
+                            <div class="col-xs-6 col-sm-4" title="Total order amount"><span class="pull-right">100.23</span></div>
+                        </div>
                     </div>
                     <div id="event" class="panel-collapse collapse in" role="tabpanel"
                          aria-labelledby="headingEvent">
-                        <div class="panel-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                            squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa
-                            nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid
-                            single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
-                            beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you
-                            probably haven't heard of them accusamus labore sustainable VHS.
-                        </div>
+                        <ul class="list-group">
+                            <!--<li ng-repeat="user in event.users" class="list-group-item">-->
+                            <li class="list-group-item" ng-repeat="user in event.users">
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-4"><h4>{{user.email}}</h4></div>
+                                    <div class="col-sm-5 hidden-xs">
+                                        <p ng-repeat="item in user.items">{{item.name}}:{{item.price}}</p>
+                                    </div>
+                                    <div class="col-sm-3"><h5 class="pull-right">{{user.total}}</h5></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item" ng-repeat="cuser in event.confirm_users">
+                                 <div class="row">
+                                    <div class="col-xs-7"><h4>{{cuser.email}}</h4></div>
+                                    <div class="col-xs-5">
+                                        <div class="pull-right">
+                                            <a class="btn btn-info disabled">
+                                                <span class="glyphicon glyphicon-envelope visible-xs"></span><span class="hidden-xs">Send reminder</span></a>
+                                            <a class="btn btn-danger disabled" title="Remove from event">
+                                                    <span class="glyphicon glyphicon-remove visible-xs"></span><span class="hidden-xs">Remove</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                 </div>
+                            </li>
+                        </ul>
                     </div>
-                </div>
-                <div class="panel panel-default">
+                </div><!-- event-panel end -->
+
+                <div class="panel panel-default menu-panel">
                     <div class="panel-heading cursor-pointer" role="tab" id="headingMenu" data-toggle="collapse" data-parent="#accordion"
                                data-target="#menu" aria-expanded="false" aria-controls="collapseMenu">
                         <h4 class="panel-title">
@@ -35,18 +59,37 @@
                         </h4>
                     </div>
                     <div id="menu" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMenu">
-                        <div class="panel-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                            squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa
-                            nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid
-                            single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
-                            beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you
-                            probably haven't heard of them accusamus labore sustainable VHS.
-                        </div>
+                        <ul class="media-list list-group">
+                            <li ng-repeat="dish in dishes" class="list-group-item">
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-3">
+                                        <img class="img-thumbnail img-responsive"
+                                                     ng-src="{{dish.image}}" alt="{{dish.name}}">
+                                    </div>
+
+                                    <div class="col-xs-8 col-sm-6">
+                                        <h4>
+                                            {{dish.name}}<span class="badge pull-right">{{dish.price | currency}}</span>
+                                        </h4>
+                                    </div>
+
+                                    <div class="col-xs-6 col-sm-3">
+                                        <div class="pull-right">
+                                            <a class="btn btn-info disabled">
+                                                <span class="glyphicon glyphicon-edit visible-xs"></span><span class="hidden-xs">Edit</span></a>
+                                            <a class="btn btn-danger disabled">
+                                                <span class="glyphicon glyphicon-remove visible-xs"></span><span class="hidden-xs">Remove</span></a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-9">{{dish.description}}</div>
+                                 </div>
+
+                            </li>
+                        </ul>
                     </div>
-                </div>
-                <div class="panel panel-default">
+                </div><!-- menu-panel end -->
+
+                <div class="panel panel-default users-panel">
                     <div class="panel-heading cursor-pointer" role="tab" id="headingUsers" data-toggle="collapse" data-parent="#accordion"
                                data-target="#users" aria-expanded="false" aria-controls="collapseUsers">
                         <h4 class="panel-title">
@@ -55,18 +98,30 @@
                     </div>
                     <div id="users" class="panel-collapse collapse" role="tabpanel"
                          aria-labelledby="headingUsers">
-                        <div class="panel-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                            squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa
-                            nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid
-                            single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
-                            beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you
-                            probably haven't heard of them accusamus labore sustainable VHS.
-                        </div>
+                        <ul class="media-list list-group">
+                            <li ng-repeat="user in users" class="list-group-item">
+                                <div class="row">
+                                    <div class="hidden-xs col-xs-4 col-sm-3">
+                                        <img class="img-thumbnail img-responsive"
+                                             ng-src="{{user.image}}" alt="{{user.email}}">
+                                    </div>
+                                    <div class="col-xs-7 col-sm-6">
+                                        <h4>{{user.email}}</h4>
+                                    </div>
+                                    <div class="col-xs-5 col-sm-3">
+                                        <a class="btn btn-info disabled">
+                                                <span class="glyphicon glyphicon-edit visible-xs"></span><span class="hidden-xs">Edit</span></a>
+                                        <a class="btn btn-danger disabled" title="remove">
+                                                <span class="glyphicon glyphicon-remove visible-xs"></span><span class="hidden-xs">Remove</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                </div>
-                <div class="panel panel-default">
+                </div><!-- users-panel end -->
+
+                <div class="panel panel-default coupons-panel">
                     <div class="panel-heading cursor-pointer" role="tab" id="headingCoupons"
                          data-toggle="collapse" data-parent="#accordion"
                          data-target="#coupons" aria-expanded="false" aria-controls="collapseCoupons">
@@ -76,17 +131,24 @@
                     </div>
                     <div id="coupons" class="panel-collapse collapse" role="tabpanel"
                          aria-labelledby="headingCoupons">
-                        <div class="panel-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                            squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa
-                            nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid
-                            single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
-                            beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice
-                            lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you
-                            probably haven't heard of them accusamus labore sustainable VHS.
-                        </div>
+                        <ul class="list-group">
+                            <li ng-repeat="coupon in coupons" class="list-group-item">
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-4">{{coupon.expire | date:'MMM d, y'}}</div>
+                                    <div class="col-xs-6 col-sm-4">
+                                        <span class="pull-right">{{coupon.discount}}</span>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-4">
+                                        <div class="pull-right">
+                                            <a class="btn btn-info disabled">Apply</a>
+                                            <a class="btn btn-danger disabled">Remove</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
-                </div>
+                </div><!-- coupons-panel end -->
             </div><!-- panel-group end -->
         </div><!-- col-xs-12 end -->
     </div><!-- row end -->

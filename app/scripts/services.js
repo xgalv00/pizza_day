@@ -29,48 +29,65 @@ angular.module('confusionApp')
     .service('groupDetailFactory', function () {
         var event = {
                 _id: 0,
-                name: 'Event',
-                category: 'mains',
-                label: 'Hot',
-                price: '4.99',
-                description: 'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.',
+                users: [
+                        {
+                            _id: 0,
+                            items: [
+                                    {
+                                        _id: 0,
+                                        name: 'Uthapizza',
+                                        price: '1233.12'
+                                    },
+                                    {
+                                        _id: 1,
+                                        name: 'Zucchipakoda',
+                                        price: '1233.12'
+                                    }
+                                ],
+                            total: '1110.12',
+                            email: 'mains@adsf.com'
+                        },
+                        {
+                            _id: 1,
+                            items: [
+                                    {
+                                        _id: 0,
+                                        name: 'Uthapizza',
+                                        price: '1233.12'
+                                    },
+                                    {
+                                        _id: 1,
+                                        name: 'Zucchipakoda',
+                                        price: '1233.12'
+                                    }
+                                ],
+                            total: '1110.12',
+                            email: 'mains@adsf.com'
+                        }
+                    ],
+                confirm_users: [
+                        {
+                            _id: 0,
+                            email: 'mains@adsf.com'
+                        },
+                        {
+                            _id: 1,
+                            email: 'mains@adsf.com'
+                        }
+                    ]
             };
         var users = [
             {
                 _id: 0,
                 name: 'Uthapizza',
                 image: 'images/uthapizza.png',
-                category: 'mains',
-                label: 'Hot',
-                price: '4.99',
-                description: 'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.',
+                email: 'mains@adsf.com'
             },
             {
                 _id: 1,
                 name: 'Zucchipakoda',
                 image: 'images/zucchipakoda.png',
-                category: 'appetizer',
-                label: '',
-                price: '1.99',
-                description: 'Deep fried Zucchini coated with mildly spiced Chickpea flour batter accompanied with a sweet-tangy tamarind sauce',
-            },
-            {
-                _id: 2,
-                name: 'Vadonut',
-                image: 'images/vadonut.png',
-                category: 'appetizer',
-                label: 'New',
-                price: '1.99',
-                description: 'A quintessential ConFusion experience, is it a vada or is it a donut?',
-            },
-            {
-                _id: 3,
-                name: 'ElaiCheese Cake',
-                image: 'images/elaicheesecake.png',
-                category: 'dessert',
-                label: '',
-                price: '2.99',
-                description: 'A delectable, semi-sweet New York Style Cheese Cake, with Graham cracker crust and spiced with Indian cardamoms',
+                email: 'mains@adsf.com'
             }
         ];
         var dishes = [
@@ -114,17 +131,13 @@ angular.module('confusionApp')
         var coupons = [
             {
                 _id: 0,
-                name: 'Coupon',
-                label: 'Hot',
-                price: '4.99',
-                description: 'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.',
+                expire: new Date(),
+                discount: '4123.99'
             },
             {
                 _id: 1,
-                name: 'Coupon',
-                label: '',
-                price: '1.99',
-                description: 'Deep fried Zucchini coated with mildly spiced Chickpea flour batter accompanied with a sweet-tangy tamarind sauce',
+                expire: new Date(),
+                discount: '1.99'
             }
         ];
         this.getEvent = function () {
