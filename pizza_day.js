@@ -224,6 +224,14 @@ if (Meteor.isClient) {
                 $scope.users = groupDetailFactory.getUsers();
                 $scope.dishes = groupDetailFactory.getDishes();
                 $scope.coupons = groupDetailFactory.getCoupons();
+                $scope.removeCoupon = function (coupon) {
+                    $scope.coupons.remove(coupon);
+                };
+                $scope.addCoupon = function (coupon) {
+                    $scope.coupons.save(coupon);
+                    $('#addCouponModal').modal('hide');
+                //    TODO add server side validation
+                };
 
             }
         ])
@@ -331,7 +339,7 @@ if (Meteor.isClient) {
                 return groups[index];
             };
         }])
-        .service('groupDetailFactory', ['$meteor',function ($meteor) {
+        .service('groupDetailFactory', ['$meteor', function ($meteor) {
             this.getEvents = function () {
                 return $meteor.collection(Events);
             };
