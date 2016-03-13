@@ -1,0 +1,1 @@
+angular.module('pizzaDayApp', ['angular-meteor', 'ui.router']);
