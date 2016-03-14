@@ -1,3 +1,10 @@
+body {
+    align: center;
+    padding: 50px 0px 0px 0px;
+    z-index: 0;
+    background: #fcfcfc url(images/bg.jpg) repeat;
+}
+
 .row-header {
     margin: 0px auto;
     padding: 0px 0px;
@@ -37,12 +44,6 @@ address {
     margin: 0px;
 }
 
-body {
-    align: center;
-    padding: 50px 0px 0px 0px;
-    z-index: 0;
-}
-
 .tab-content {
     border-bottom: 1px solid #dddddd;
     border-left: 1px solid #dddddd;
@@ -79,15 +80,65 @@ body {
     padding-top: 8px;
 }
 
-a.remove-link-decoration{
+a.remove-link-decoration {
     color: #333;
     text-decoration: none;
 }
 
-a.remove-link-decoration:hover{
+a.remove-link-decoration:hover {
     color: #333;
     text-decoration: none;
 }
+
 .cursor-pointer {
     cursor: pointer;
+}
+
+.oauth {
+    height: 50px;
+}
+
+.social-btn {
+    background: #db5a3c;
+    color: #fff;
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    font-size: 18px;
+}
+
+.social-btn:hover {
+    background: #CA4C2E;
+}
+.at-sep {
+    height: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 8px;
+    margin-top: 15px;
+}
+
+.at-sep::before {
+    left: -60%;
+    display: block;
+    content: " ";
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+    position: absolute;
+    top: 48%;
+}
+
+.at-sep::after {
+    right: -60%;
+    display: block;
+    content: " ";
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+    position: absolute;
+    top: 48%;
+}
+
+.title {
+    text-align: center;
 }

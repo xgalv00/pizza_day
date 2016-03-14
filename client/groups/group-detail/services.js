@@ -7,7 +7,7 @@ angular.module('pizzaDayApp')
             //    return $meteor.object(Events);
             //};
             this.getUsers = function () {
-                return $meteor.collection(Users);
+                return [];
             };
             this.getDishes = function () {
                 return $meteor.collection(Dishes);

@@ -1,0 +1,78 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+
+            <div class="at-form">
+
+                <div class="title">
+                    <h3>Sign Up</h3>
+                </div>
+                <div ng-show="rc.error">
+                    {{ rc.error }}
+                </div>
+
+                <div class="oauth">
+
+                    <button class="btn social-btn" name="google">
+                        Sign Up with Google
+                    </button>
+
+                </div>
+
+
+                <div class="at-sep">
+                    <strong>OR</strong>
+                </div>
+
+
+                <div class="at-pwd-form">
+                    <form role="form" novalidate="" action="#" method="POST">
+                        <fieldset>
+
+
+                            <div class="at-input form-group has-feedback">
+                                <label class="control-label" for="signup-email">
+                                    Email
+                                </label>
+                                <input id="signup-email" ng-model="rc.credentials.email"
+                                       type="email" class="form-control" name="email"
+                                       placeholder="Email" autocapitalize="none" autocorrect="off">
+
+                                <span class="help-block hide"></span>
+                            </div>
+
+
+                            <div class="at-input form-group has-feedback">
+                                <label class="control-label" for="signup-password">
+                                    Password
+                                </label>
+                                <input id="signup-password" type="password" ng-model="rc.credentials.password"
+                                       class="form-control" name="password"
+                                       placeholder="Password" autocapitalize="none" autocorrect="off">
+
+                                <span class="help-block hide">Test</span>
+                            </div>
+
+                            <button ng-click="rc.register()" type="submit"
+                                    class="at-btn submit btn btn-lg btn-block btn-default">
+                                Create account
+                            </button>
+                        </fieldset>
+                    </form>
+                </div>
+
+
+                <div>
+                    <p>
+                        Have an account?
+                        <a ui-sref="app.login">Login</a>
+
+                    </p>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>

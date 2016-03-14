@@ -26,8 +26,10 @@
             </ul>
             <div class="navbar-right">
                 <ul class="nav navbar-nav">
-                    <li><a href="#toggleModal">Log in</a></li>
-                    <li><a href="#toggleModal">Sign up</a></li>
+                    <li><a ui-sref="app.login" ng-hide="$root.currentUser">Login</a></li>
+                    <li><a ui-sref="app.register" ng-hide="$root.currentUser">Sign up</a></li>
+                    <li><div ng-show="$root.currentUser" ng-bind="$root.currentUser"></div></li>
+                    <li><a ui-sref="app.logout" ng-show="$root.currentUser">Logout</a></li>
                 </ul>
             </div>
         </div>
