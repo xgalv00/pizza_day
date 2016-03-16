@@ -47,8 +47,8 @@ angular.module('pizzaDayApp').config(function ($stateProvider, $urlRouterProvide
             url: 'users',
             views: {
                 'content@': {
-                    templateUrl: 'client/views/users.ng.html',
-                    controller: 'MenuController'
+                    templateUrl: 'client/users/views/users.ng.html',
+                    controller: 'UserListController'
                 }
             }
         })

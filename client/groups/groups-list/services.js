@@ -1,6 +1,6 @@
 angular.module('pizzaDayApp')
         .service('groupListFactory', ['$meteor', function ($meteor) {
-            var groups = $meteor.collection(Groups);
+            var groups = $meteor.collection(Groups).subscribe('groups');
             this.getGroups = function () {
                 return groups;
             };
