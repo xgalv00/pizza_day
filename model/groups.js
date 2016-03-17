@@ -1,4 +1,11 @@
-Groups = new Mongo.Collection("groups");
+Groups = new Mongo.Collection("groups", {
+  transform: function(doc) {
+    doc.owner = Meteor.users.findOne({
+      _id: doc.owner
+    }, {fields: {emails: 1, profile: 1}});
+    return doc;
+  }
+});
 
 //Groups.allow({
 //    insert: function (userId) {
