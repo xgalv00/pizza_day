@@ -1,16 +1,16 @@
 Groups = new Mongo.Collection("groups");
 
-Groups.allow({
-    insert: function (userId) {
-      return (userId ? true : false);
-    },
-    remove: function (userId) {
-      return (userId ? true : false);
-    },
-    update: function (userId) {
-      return (userId ? true : false);
-    }
-  });
+//Groups.allow({
+//    insert: function (userId) {
+//      return (userId ? true : false);
+//    },
+//    remove: function (userId) {
+//      return (userId ? true : false);
+//    },
+//    update: function (userId) {
+//      return (userId ? true : false);
+//    }
+//  });
 
 Meteor.methods({
     addUser: function (userId, group) {
@@ -20,6 +20,13 @@ Meteor.methods({
         //    image: Date
         //});
         Groups.insert(userId, group);
+    },
+    addGroup: function (group) {
+        // TODO add check for group
+        Groups.insert(group);
+    },
+    removeGroup: function (group){
+        Groups.remove(group._id)
     }
 
     //invite: function (partyId, userId) {
