@@ -35,6 +35,7 @@
                                 </a>
                             </div>
                             <div class="col-xs-2">
+                                <a class="btn btn-info" ng-click="open(group)">Edit</a>
                                 <a class="btn btn-danger" ng-click="removeGroup(group)">Remove</a>
                             </div>
                         </div>
@@ -95,6 +96,29 @@
             </div>
         </div>
     </div>
+
+    <script type="text/ng-template" id="editModalContent.html">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Edit Group</h4>
+        </div>
+        <div class="modal-body">
+            <form ng-submit="editGroup(group)">
+                <div class="form-group">
+                    <label for="edit-group-name" class="control-label">Group name:</label>
+                    <input type="text" class="form-control" id="edit-group-name" ng-model="group.name">
+                </div>
+                <div class="form-group">
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                    </button>
+                    <input type="submit" class="btn btn-primary" value="Edit group">
+                </div>
+            </form>
+        </div>
+    </script>
 
 </div>
 

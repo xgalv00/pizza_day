@@ -1,1 +1,1 @@
-angular.module('pizzaDayApp', ['angular-meteor', 'ui.router', 'ngFileUpload', 'ngImgCrop']);
+angular.module('pizzaDayApp', ['angular-meteor', 'ui.router', 'ui.bootstrap', 'ngFileUpload', 'ngImgCrop']);

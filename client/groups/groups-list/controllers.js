@@ -1,7 +1,21 @@
 angular.module('pizzaDayApp')
-    .controller('GroupListController', ['$scope', '$rootScope', '$meteor', function ($scope, $rootScope, $meteor) {
+    .controller('GroupListController', ['$scope', '$rootScope', '$meteor', '$modal', function ($scope, $rootScope, $meteor, $modal) {
         $scope.groups = $meteor.collection(Groups).subscribe('groups');
         $scope.images = $meteor.collectionFS(Images, false, Images).subscribe('images');
+
+        $scope.open = function (_group) {
+
+            var modalInstance = $modal.open({
+                controller: "ModalInstanceCtrl",
+                templateUrl: 'editModalContent.html',
+                resolve: {
+                    group: function () {
+                        return _group;
+                    }
+                }
+            });
+
+        };
 
         $scope.addImages = function (files) {
             if (files.length > 0) {
@@ -49,11 +63,18 @@ angular.module('pizzaDayApp')
         };
 
         $scope.removeGroup = function (group) {
-            $meteor.call('removeGroup', group).then(function (result){
-                console.log('success remove');
-            },
-            function (err){
-                console.log('error remove' + err.message);
-            })
+            $meteor.call('removeGroup', group).then(function (result) {
+                    console.log('success remove');
+                },
+                function (err) {
+                    console.log('error remove' + err.message);
+                })
         };
-    }]);
+    }])
+    .controller('ModalInstanceCtrl', ['$scope', '$meteor', '$modalInstance', 'group', function ($scope, $meteor, $modalInstance, group) {
+        $scope.group = group;
+        $scope.editGroup = function (group) {
+            console.log(group.name + 'from modal instance');
+        }
+    }])
+;

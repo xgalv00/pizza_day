@@ -1,10 +1,10 @@
 Groups = new Mongo.Collection("groups", {
-  transform: function(doc) {
-    doc.owner = Meteor.users.findOne({
-      _id: doc.owner
-    }, {fields: {emails: 1, profile: 1}});
-    return doc;
-  }
+    transform: function (doc) {
+        doc.owner = Meteor.users.findOne({
+            _id: doc.owner
+        }, {fields: {emails: 1, profile: 1}});
+        return doc;
+    }
 });
 
 //Groups.allow({
@@ -20,20 +20,28 @@ Groups = new Mongo.Collection("groups", {
 //  });
 
 Meteor.methods({
-    addUser: function (userId, group) {
+    addUser: function (userId, groupId) {
         check(userId, nonEmptyString);
         //check(group, {
         //    name: String,
         //    image: Date
         //});
-        Groups.insert(userId, group);
+        var user = Meteor.users.findOne(userId);
+        var group = Groups.findOne(groupId);
+        if (!user)
+            throw new Meteor.Error(404, "No such user");
+        if (!group)
+            throw new Meteor.Error(404, "No such group");
+        Meteor.users.update(userId, {$addToSet: {groups: groupId}});
+        Groups.update(groupId, {$addToSet: {users: userId}});
     },
     addGroup: function (group) {
         // TODO add check for group
         Groups.insert(group);
     },
-    removeGroup: function (group){
-        Groups.remove(group._id)
+    removeGroup: function (group) {
+        Groups.remove(group._id);
+        //TODO add remove group from each user
     }
 
     //invite: function (partyId, userId) {
@@ -79,6 +87,6 @@ var contactEmail = function (user) {
 };
 
 var nonEmptyString = Match.Where(function (x) {
-  check(x, String);
-  return x.length > 0;
+    check(x, String);
+    return x.length > 0;
 });

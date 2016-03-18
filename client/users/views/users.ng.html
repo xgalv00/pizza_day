@@ -9,6 +9,10 @@
                         </div>
                         <div class="col-xs-2 col-sm-2">
                             <a class="btn btn-info pull-right">Add to group</a>
+                            <select name="group-select" id="" ng-model="groupId">
+                                <option value="{{group._id}}" ng-repeat="group in owner_groups">{{ group.name }}</option>
+                            </select>
+                            <a class="btn btn-info pull-right" ng-click="addUserToGroup(user._id, groupId)">Confirm</a>
                         </div>
                     </div>
                 </li>
