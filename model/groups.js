@@ -22,6 +22,7 @@ Groups = new Mongo.Collection("groups", {
 Meteor.methods({
     addUser: function (userId, groupId) {
         check(userId, nonEmptyString);
+        check(groupId, nonEmptyString);
         //check(group, {
         //    name: String,
         //    image: Date
