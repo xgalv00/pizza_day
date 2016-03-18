@@ -8,7 +8,7 @@
                             <h4>{{user | displayName}}</h4>
                         </div>
                         <div class="col-xs-2 col-sm-2">
-                            <a class="btn btn-info pull-right" ng-click="open(user)" ng-show="user._id!=$root.currentUser._id">Add to group</a>
+                            <a class="btn btn-info pull-right" ng-click="open(user)" ng-show="ifCouldBeAdded(user)">Add to group</a>
                         </div>
                     </div>
                 </li>
