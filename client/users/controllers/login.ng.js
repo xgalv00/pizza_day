@@ -19,5 +19,13 @@ angular.module("pizzaDayApp").controller("LoginCtrl", ['$meteor', '$state',
                 }
             );
         };
+        vm.loginOAuth = function () {
+            $meteor.loginWithGoogle().then(function (){
+                $state.go('app.groups');
+            },
+            function (err){
+                vm.error = 'Login error - ' + err;
+            });
+        }
     }
 ]);
