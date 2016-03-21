@@ -58,12 +58,20 @@
                 </div><!-- event-panel end -->
 
                 <div class="panel panel-default menu-panel">
-                    <div class="panel-heading cursor-pointer" role="tab" id="headingMenu" data-toggle="collapse"
-                         data-parent="#accordion"
-                         data-target="#menu" aria-expanded="false" aria-controls="collapseMenu">
-                        <h4 class="panel-title">
-                            Menu
-                        </h4>
+                    <div class="panel-heading" id="headingMenu">
+                        <div class="row">
+                            <div class="col-xs-11 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
+                                 data-target="#menu" aria-expanded="false" aria-controls="collapseMenu">
+                                <h4 class="panel-title">
+                                    Menu
+                                </h4>
+                            </div>
+                            <div class="col-xs-1">
+                                <button class="btn btn-primary" type="button" data-toggle="modal"
+                                        data-target="#addDishModal">Add Dish
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div id="menu" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMenu">
                         <ul class="media-list list-group">
@@ -71,7 +79,7 @@
                                 <div class="row">
                                     <div class="col-xs-4 col-sm-3">
                                         <img class="img-thumbnail img-responsive"
-                                             ng-src="{{dish.image}}" alt="{{dish.name}}">
+                                             ng-src="{{dish.image.url()}}" alt="{{dish.name}}">
                                     </div>
 
                                     <div class="col-xs-8 col-sm-6">
@@ -85,7 +93,7 @@
                                             <a class="btn btn-info disabled">
                                                 <span class="glyphicon glyphicon-edit visible-xs"></span><span
                                                     class="hidden-xs">Edit</span></a>
-                                            <a class="btn btn-danger disabled">
+                                            <a class="btn btn-danger" ng-click="removeDish(dish)">
                                                 <span class="glyphicon glyphicon-remove visible-xs"></span><span
                                                     class="hidden-xs">Remove</span></a>
                                         </div>
@@ -127,8 +135,7 @@
                 </div><!-- users-panel end -->
 
                 <div class="panel panel-default coupons-panel">
-                    <div class="panel-heading" role="tab" id="headingCoupons"
-                    >
+                    <div class="panel-heading" role="tab" id="headingCoupons">
                         <div class="row">
                             <div class="col-xs-11 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
                                  data-target="#coupons" aria-expanded="false" aria-controls="collapseCoupons">
@@ -140,37 +147,6 @@
                                 <button class="btn btn-primary" type="button" data-toggle="modal"
                                         data-target="#addCouponModal">Add
                                 </button>
-                            </div>
-                        </div>
-
-
-                        <div id="addCouponModal" class="modal" tabindex="-1" role="dialog"
-                             aria-labelledby="mySmallModalLabel">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title" id="exampleModalLabel">New message</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form>
-                                            <div class="form-group">
-                                                <label for="coupon-expire" class="control-label">Coupon expire:</label>
-                                                <input type="text" class="form-control" id="coupon-expire" ng-model="newCoupon.expire">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="coupon-discount" class="control-label">Coupon discount:</label>
-                                                <input type="text" class="form-control" id="coupon-discount" ng-model="newCoupon.discount">
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close
-                                        </button>
-                                        <button type="button" class="btn btn-primary" ng-click="addCoupon(newCoupon);newCoupon=''">Add coupon</button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -198,6 +174,95 @@
         </div><!-- col-xs-12 end -->
     </div><!-- row end -->
 
+    <!--modals-->
+    <div id="addDishModal" class="modal" tabindex="-1" role="dialog"
+         aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">New Dish</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="add-dish-name" class="control-label">Dish name:</label>
+                            <input type="text" class="form-control" id="add-dish-name" ng-model="newDish.name">
+                        </div>
+                        <div class="form-group">
+                            <label for="add-dish-price" class="control-label">Dish price:</label>
+                            <input type="text" class="form-control" id="add-dish-price" ng-model="newDish.price">
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <div ng-hide="imgSrc" ngf-drop ngf-select
+                                     ngf-change="addImages($files)"
+                                     ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}"
+                                     class="drop-box"
+                                     ngf-multiple="false" ngf-allow-dir="false" ngf-accept="'image/*'"
+                                     ngf-drop-available="dropAvailable">
+                                    <div>Click here to select image</div>
+                                    <div>
+                                        <strong>OR</strong>
+                                    </div>
+                                    <div ng-show="dropAvailable">You can also drop image to here</div>
+                                </div>
+                                <div ng-show="imgSrc" class="ng-crop-container">
+                                    <h3>Great! Now edit & crop your image...</h3><br/>
+                                    <img-crop image="imgSrc" result-image="myCroppedImage"
+                                              area-type="square"></img-crop>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                    </button>
+                    <button type="button" class="btn btn-primary" ng-click="addDish(newDish);newDish=''">Add Dish
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--addDishModal end-->
+
+    <div id="addCouponModal" class="modal" tabindex="-1" role="dialog"
+         aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">New message</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="coupon-expire" class="control-label">Coupon expire:</label>
+                            <input type="text" class="form-control" id="coupon-expire"
+                                   ng-model="newCoupon.expire">
+                        </div>
+                        <div class="form-group">
+                            <label for="coupon-discount" class="control-label">Coupon
+                                discount:</label>
+                            <input type="text" class="form-control" id="coupon-discount"
+                                   ng-model="newCoupon.discount">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                            ng-click="addCoupon(newCoupon);newCoupon=''">Add coupon
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- addCouponModal end-->
 </div>
 
 
