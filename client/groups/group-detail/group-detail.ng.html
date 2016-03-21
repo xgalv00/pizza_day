@@ -63,6 +63,46 @@
                     </div>
                 </div><!-- event-panel end -->
 
+                <div class="panel panel-default order-panel" ng-show="order">
+                    <div class="panel-heading cursor-pointer" data-toggle="collapse" data-parent="#accordion"
+                         data-target="#order" aria-expanded="false" aria-controls="collapseOrder">
+                        <div class="row">
+                            <div class="col-xs-10 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
+                                 data-target="#order" aria-expanded="false" aria-controls="collapseEvent">
+                                <div class="col-xs-6 col-sm-4">
+                                    <h4 class="panel-title">
+                                        Order
+                                    </h4></div>
+                                <div class="col-xs-6 col-sm-4" title="Total order amount"><span
+                                        class="pull-right">{{order.total}}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="order" class="panel-collapse collapse in" role="tabpanel"
+                         aria-labelledby="collapseOrder">
+                        <ul class="list-group">
+                            <li class="list-group-item" ng-repeat="item in order.items">
+                                <div class="row">
+                                    <div class="col-xs-4 col-sm-4">{{item.name}}</div>
+                                    <div class="col-xs-4 col-sm-2">{{item.count}}</div>
+                                    <div class="col-xs-4 col-sm-2">{{item.price}}</div>
+                                    <div class="col-xs-4 col-sm-3">{{item.total}}</div>
+                                    <div class="col-xs-4 col-sm-1">
+                                        <button class="btn btn-primary disabled">Edit</button>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-xs-2 pull-right">
+                                        <button class="btn btn-primary" ng-click="confirmOrder(order)">Confirm</button>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div><!-- order-panel end -->
+
                 <div class="panel panel-default menu-panel">
                     <div class="panel-heading" id="headingMenu">
                         <div class="row">
@@ -96,6 +136,7 @@
 
                                     <div class="col-xs-6 col-sm-3">
                                         <div class="pull-right">
+                                            <button class="btn btn-primary" ng-click="orderDish(dish)">Order</button>
                                             <a class="btn btn-info disabled">
                                                 <span class="glyphicon glyphicon-edit visible-xs"></span><span
                                                     class="hidden-xs">Edit</span></a>

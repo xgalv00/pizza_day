@@ -7,7 +7,9 @@ angular.module('pizzaDayApp')
             var group_id = $stateParams.id;
             $scope.group = $meteor.object(Groups, group_id).subscribe('groups');
             //TODO rewrite with fetch one item from db
-            $scope.events = $meteor.collection(Events).subscribe('events');
+            $scope.events = $meteor.collection(Events).subscribe('events', group_id);
+            $scope.current_event = $meteor.object(Events, "CMP4zHjhrJX9GHWJn").subscribe('events');
+            $scope.order = $meteor.object(Orders, "cNW9vw7Akgx2cCkcQ").subscribe('orders', group_id);
             $scope.users = $meteor.collection(Meteor.users, false).subscribe('group_users');
             $scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
             $scope.coupons = $meteor.collection(Coupons).subscribe('coupons');
@@ -68,6 +70,20 @@ angular.module('pizzaDayApp')
                     })
             };
 
+            $scope.orderDish = function (dish) {
+                var order = {
+                    dish: dish,
+                    event: $scope.current_event._id,
+                    group: $scope.group._id
+                };
+                $meteor.call('orderDish', order).then(function (result) {
+                        console.log('success order');
+                    },
+                    function (err) {
+                        console.log('error order ' + err.message);
+                    })
+            };
+
             $scope.removeCoupon = function (coupon) {
                 $scope.coupons.remove(coupon);
             };
@@ -80,7 +96,7 @@ angular.module('pizzaDayApp')
             $scope.addEvent = function (event) {
                 event.group = $scope.group._id;
                 $meteor.call('addEvent', event).then(function (result) {
-                     $('#addEventModal').modal('hide');
+                        $('#addEventModal').modal('hide');
                         console.log('success add event');
                     },
                     function (err) {
