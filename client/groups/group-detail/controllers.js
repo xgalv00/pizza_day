@@ -7,7 +7,7 @@ angular.module('pizzaDayApp')
             var group_id = $stateParams.id;
             $scope.group = $meteor.object(Groups, group_id).subscribe('groups');
             //TODO rewrite with fetch one item from db
-            $scope.event = events[0];
+            $scope.events = $meteor.collection(Events).subscribe('events');
             $scope.users = $meteor.collection(Meteor.users, false).subscribe('group_users');
             $scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
             $scope.coupons = $meteor.collection(Coupons).subscribe('coupons');
@@ -75,6 +75,20 @@ angular.module('pizzaDayApp')
                 $scope.coupons.save(coupon);
                 $('#addCouponModal').modal('hide');
                 //    TODO add server side validation
+            };
+
+            $scope.addEvent = function (event) {
+                event.group = $scope.group._id;
+                $meteor.call('addEvent', event).then(function (result) {
+                     $('#addEventModal').modal('hide');
+                        console.log('success add event');
+                    },
+                    function (err) {
+                        console.log('error add event' + err.message);
+                    });
+            };
+            $scope.removeEvent = function (event) {
+                $scope.events.remove(event);
             };
 
         }

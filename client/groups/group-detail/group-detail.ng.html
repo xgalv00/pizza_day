@@ -11,17 +11,23 @@
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
                 <div class="panel panel-default event-panel">
-                    <div class="panel-heading cursor-pointer" role="tab" id="headingEvent" data-toggle="collapse"
-                         data-parent="#accordion" data-target="#event" aria-expanded="true"
-                         aria-controls="collapseEvent">
+                    <div class="panel-heading">
                         <div class="row">
-                            <div class="col-xs-6 col-sm-4">
-                                <h4 class="panel-title">
-                                    Next event
-                                </h4></div>
-                            <div class="col-sm-4 hidden-xs" title="Confirmed/total users">2/3</div>
-                            <div class="col-xs-6 col-sm-4" title="Total order amount"><span
-                                    class="pull-right">100.23</span></div>
+                            <div class="col-xs-10 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
+                                 data-target="#event" aria-expanded="false" aria-controls="collapseEvent">
+                                <div class="col-xs-6 col-sm-4">
+                                    <h4 class="panel-title">
+                                        Next event
+                                    </h4></div>
+                                <div class="col-sm-4 hidden-xs" title="Confirmed/total users">2/3</div>
+                                <div class="col-xs-6 col-sm-4" title="Total order amount"><span
+                                        class="pull-right">100.23</span></div>
+                            </div>
+                            <div class="col-xs-2">
+                                <button class="btn btn-primary" type="button" data-toggle="modal"
+                                        data-target="#addEventModal">Create Event
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div id="event" class="panel-collapse collapse in" role="tabpanel"
@@ -175,94 +181,7 @@
     </div><!-- row end -->
 
     <!--modals-->
-    <div id="addDishModal" class="modal" tabindex="-1" role="dialog"
-         aria-labelledby="mySmallModalLabel">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">New Dish</h4>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="add-dish-name" class="control-label">Dish name:</label>
-                            <input type="text" class="form-control" id="add-dish-name" ng-model="newDish.name">
-                        </div>
-                        <div class="form-group">
-                            <label for="add-dish-price" class="control-label">Dish price:</label>
-                            <input type="text" class="form-control" id="add-dish-price" ng-model="newDish.price">
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <div ng-hide="imgSrc" ngf-drop ngf-select
-                                     ngf-change="addImages($files)"
-                                     ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}"
-                                     class="drop-box"
-                                     ngf-multiple="false" ngf-allow-dir="false" ngf-accept="'image/*'"
-                                     ngf-drop-available="dropAvailable">
-                                    <div>Click here to select image</div>
-                                    <div>
-                                        <strong>OR</strong>
-                                    </div>
-                                    <div ng-show="dropAvailable">You can also drop image to here</div>
-                                </div>
-                                <div ng-show="imgSrc" class="ng-crop-container">
-                                    <h3>Great! Now edit & crop your image...</h3><br/>
-                                    <img-crop image="imgSrc" result-image="myCroppedImage"
-                                              area-type="square"></img-crop>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close
-                    </button>
-                    <button type="button" class="btn btn-primary" ng-click="addDish(newDish);newDish=''">Add Dish
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--addDishModal end-->
-
-    <div id="addCouponModal" class="modal" tabindex="-1" role="dialog"
-         aria-labelledby="mySmallModalLabel">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="exampleModalLabel">New message</h4>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="coupon-expire" class="control-label">Coupon expire:</label>
-                            <input type="text" class="form-control" id="coupon-expire"
-                                   ng-model="newCoupon.expire">
-                        </div>
-                        <div class="form-group">
-                            <label for="coupon-discount" class="control-label">Coupon
-                                discount:</label>
-                            <input type="text" class="form-control" id="coupon-discount"
-                                   ng-model="newCoupon.discount">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close
-                    </button>
-                    <button type="button" class="btn btn-primary"
-                            ng-click="addCoupon(newCoupon);newCoupon=''">Add coupon
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- addCouponModal end-->
+    <div ng-include src=" 'client/groups/group-detail/modals.ng.html' "></div>
 </div>
 
 
