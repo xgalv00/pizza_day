@@ -1,8 +1,10 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-2 hidden-sm hidden-xs"><h3>Image</h3></div>
-        <div class="col-md-10 col-xs-12"><h3>Heading</h3></div>
+        <div class="col-md-2 hidden-sm hidden-xs">
+            <img class="media-object img-thumbnail" src="{{group.image.url()}}" alt="{{group.name}}">
+        </div>
+        <div class="col-md-10 col-xs-12"><h3>{{group.name}}</h3></div>
     </div>
     <div class="row">
         <div class="col-xs-12">

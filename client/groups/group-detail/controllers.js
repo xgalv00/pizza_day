@@ -1,15 +1,17 @@
 angular.module('pizzaDayApp')
-    .controller('GroupDetailController', ['$scope', '$stateParams', 'groupListFactory', 'groupDetailFactory',
-            function ($scope, $stateParams, groupListFactory, groupDetailFactory) {
+    .controller('GroupDetailController', ['$scope', '$stateParams', '$meteor', 'groupListFactory',
+            function ($scope, $stateParams, $meteor, groupListFactory) {
+
+                var events = $meteor.collection(Events).subscribe('events');
                 //TODO add group validation
-                var group_id = parseInt($stateParams.id, 10);
-                var events = groupDetailFactory.getEvents();
-                $scope.group = groupListFactory.getGroup(group_id);
+                var group_id = $stateParams.id;
+                $scope.group = $meteor.object(Groups, group_id);
                 //TODO rewrite with fetch one item from db
                 $scope.event = events[0];
-                $scope.users = groupDetailFactory.getUsers();
-                $scope.dishes = groupDetailFactory.getDishes();
-                $scope.coupons = groupDetailFactory.getCoupons();
+                $scope.users = $meteor.collection(Meteor.users, false).subscribe('group_users');
+                $scope.dishes = $meteor.collection(Dishes).subscribe('dishes');
+                $scope.coupons = $meteor.collection(Coupons).subscribe('coupons');
+
                 $scope.removeCoupon = function (coupon) {
                     $scope.coupons.remove(coupon);
                 };
