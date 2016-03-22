@@ -88,7 +88,7 @@
                                         <input class="form-control" ng-model="item.count"
                                                ng-change="updateDishOrder(item, order)" title="Count to order">
                                     </div>
-                                    <div class="col-xs-4 col-sm-2">{{item.price}}</div>
+                                    <div class="col-xs-4 col-sm-2"><span class="full-price" ng-if="item.full_price">{{item.full_price}}/</span> {{item.price}}</div>
                                     <div class="col-xs-4 col-sm-3">{{item.total}}</div>
                                 </div>
                             </li>
@@ -204,13 +204,12 @@
                         <ul class="list-group">
                             <li ng-repeat="coupon in coupons" class="list-group-item">
                                 <div class="row">
-                                    <div class="col-xs-6 col-sm-4">{{coupon.expire | date:'MMM d, y'}}</div>
+                                    <div class="col-xs-6 col-sm-4">{{coupon.dish.name}}</div>
                                     <div class="col-xs-6 col-sm-4">
                                         <span class="pull-right">{{coupon.discount}}</span>
                                     </div>
                                     <div class="col-xs-12 col-sm-4">
                                         <div class="pull-right">
-                                            <a class="btn btn-info disabled">Apply</a>
                                             <a class="btn btn-danger" ng-click="removeCoupon(coupon)">Remove</a>
                                         </div>
                                     </div>

@@ -4,16 +4,42 @@ Orders = new Mongo.Collection("orders", {
     transform: function (doc) {
         var total = 0;
         doc.items.forEach(function (element, index, array) {
+            var dish = Dishes.findOne(element._id);
+            var coupon = Coupons.findOne({dish: element._id});
+            element.name = dish.name;
+            if (coupon) {
+                element.full_price = dish.price;
+                element.price = dish.price * (1 - coupon.discount / 100);
+            }
+            else {
+                element.price = dish.price;
+            }
             element.total = element.price * element.count;
+
             total += element.total;
         });
         doc.total = total;
         return doc;
     }
 });
-Coupons = new Mongo.Collection("coupons");
+Coupons = new Mongo.Collection("coupons", {
+    transform: function (doc) {
+        doc.dish = Dishes.findOne({
+            _id: doc.dish
+        }, {fields: {name: 1}});
+        return doc;
+    }
+});
 
 Meteor.methods({
+    addCoupon: function (coupon) {
+        console.log("coupon add");
+        Coupons.insert(coupon);
+    },
+    removeCoupon: function (coupon) {
+        console.log("coupon remove");
+        Coupons.remove(coupon._id);
+    },
     addEvent: function (event) {
         // TODO add check for group
         Events.insert(event);
@@ -29,9 +55,9 @@ Meteor.methods({
         Dishes.remove(dish._id);
         //TODO add remove group from each user
     },
-    updateDishOrder: function (dish_id, order_id, count){
-         //TODO check dish_id is string and count is number
-         var order = Orders.findOne(order_id);
+    updateDishOrder: function (dish_id, order_id, count) {
+        //TODO check dish_id is string and count is number
+        var order = Orders.findOne(order_id);
         if (!order)
             throw new Meteor.Error(404, "No such order");
         Orders.update({_id: order._id, "items._id": dish_id}, {$set: {"items.$.count": parseInt(count, 10)}});

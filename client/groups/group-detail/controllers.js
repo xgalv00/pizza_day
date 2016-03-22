@@ -10,11 +10,11 @@ angular.module('pizzaDayApp')
                 $scope.events = $meteor.collection(Events);
                 $scope.current_event = $meteor.object(Events, {group: group_id, active: true});
                 $meteor.subscribe('orders', $scope.current_event._id).then(function (subsHandler) {
-                    $scope.order = $meteor.object(Orders, {
-                        event: $scope.current_event._id,
-                        user: $rootScope.currentUser._id
-                    });
-                }
+                        $scope.order = $meteor.object(Orders, {
+                            event: $scope.current_event._id,
+                            user: $rootScope.currentUser._id
+                        });
+                    }
                 );
             });
 
@@ -101,12 +101,22 @@ angular.module('pizzaDayApp')
                     })
             };
             $scope.removeCoupon = function (coupon) {
-                $scope.coupons.remove(coupon);
+                $meteor.call('removeCoupon', coupon).then(function (result) {
+                        console.log('success remove');
+                    },
+                    function (err) {
+                        console.log('error remove coupon' + err.message);
+                    });
             };
             $scope.addCoupon = function (coupon) {
-                $scope.coupons.save(coupon);
-                $('#addCouponModal').modal('hide');
-                //    TODO add server side validation
+                coupon.group = group_id;
+                $meteor.call('addCoupon', coupon).then(function (result) {
+                        $('#addCouponModal').modal('hide');
+                        console.log('success add');
+                    },
+                    function (err) {
+                        console.log('error add coupon' + err.message);
+                    });
             };
 
             $scope.addEvent = function (event) {
