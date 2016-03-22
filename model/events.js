@@ -27,8 +27,8 @@ Meteor.methods({
             throw new Meteor.Error(404, "No such event");
         if (!group)
             throw new Meteor.Error(404, "No such group");
-        var forder = Orders.findOne({user: user, event: event});
-        if (!forder){
+        var forder = Orders.findOne({user: user, event: event._id});
+        if (!forder) {
             console.log("create order");
             var dish = order.dish;
             delete order.dish;
@@ -37,16 +37,32 @@ Meteor.methods({
                 name: dish.name,
                 price: dish.price,
                 count: 1,
-                total: dish.price
+                //total: dish.price
             }];
-            order.total = dish.price;
+            //order.total = dish.price;
+            //TODO replace by map with statuses
+            order.user = this.userId;
+            order.status = "created";
             Orders.insert(order);
             console.log("success create order")
-        }else{
+        } else {
+            Orders.update({_id: forder._id, "items._id": order.dish._id}, {$inc: {"items.$.count": 1}});
+            Orders.update({_id: forder._id, "items._id" : {$ne : order.dish._id }},
+                {
+                    $addToSet: {
+                        "items": {
+                            _id: order.dish._id,
+                            name: order.dish.name,
+                            price: order.dish.price,
+                            count: 1
+                        }
+                    }
+                }
+            );
             console.log("update order");
         }
 
-        console.log("Order dish was called " + user );
+        console.log("Order dish was called " + user);
         //TODO add remove group from each user
     }
 });

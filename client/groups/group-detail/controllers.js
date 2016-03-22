@@ -7,9 +7,13 @@ angular.module('pizzaDayApp')
             var group_id = $stateParams.id;
             $scope.group = $meteor.object(Groups, group_id).subscribe('groups');
             //TODO rewrite with fetch one item from db
-            $scope.events = $meteor.collection(Events).subscribe('events', group_id);
-            $scope.current_event = $meteor.object(Events, "CMP4zHjhrJX9GHWJn").subscribe('events');
-            $scope.order = $meteor.object(Orders, "cNW9vw7Akgx2cCkcQ").subscribe('orders', group_id);
+            $meteor.subscribe('events', group_id).then(function(subsHandler){
+                $scope.events = $meteor.collection(Events);
+                $scope.current_event = $meteor.object(Events, "CMP4zHjhrJX9GHWJn");
+            });
+
+
+            $scope.order = $meteor.object(Orders, "Ppv3C5dSCidzwgcsp").subscribe('orders', group_id);
             $scope.users = $meteor.collection(Meteor.users, false).subscribe('group_users');
             $scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
             $scope.coupons = $meteor.collection(Coupons).subscribe('coupons');
