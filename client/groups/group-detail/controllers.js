@@ -7,7 +7,7 @@ angular.module('pizzaDayApp')
             var group_id = $stateParams.id;
             $scope.group = $meteor.object(Groups, group_id).subscribe('groups');
             //TODO rewrite with fetch one item from db
-            $meteor.subscribe('events', group_id).then(function(subsHandler){
+            $meteor.subscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
                 $scope.current_event = $meteor.object(Events, "CMP4zHjhrJX9GHWJn");
             });
@@ -87,7 +87,14 @@ angular.module('pizzaDayApp')
                         console.log('error order ' + err.message);
                     })
             };
-
+            $scope.updateDishOrder = function (dish, order) {
+                $meteor.call('updateDishOrder', dish._id, order._id, dish.count).then(function (result) {
+                        console.log('success update dish order');
+                    },
+                    function (err) {
+                        console.log('error update dish order ' + err.message);
+                    })
+            };
             $scope.removeCoupon = function (coupon) {
                 $scope.coupons.remove(coupon);
             };

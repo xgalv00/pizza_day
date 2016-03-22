@@ -84,12 +84,12 @@
                             <li class="list-group-item" ng-repeat="item in order.items">
                                 <div class="row">
                                     <div class="col-xs-4 col-sm-4">{{item.name}}</div>
-                                    <div class="col-xs-4 col-sm-2">{{item.count}}</div>
+                                    <div class="col-xs-2 col-sm-1">
+                                        <input class="form-control" ng-model="item.count"
+                                               ng-change="updateDishOrder(item, order)" title="Count to order">
+                                    </div>
                                     <div class="col-xs-4 col-sm-2">{{item.price}}</div>
                                     <div class="col-xs-4 col-sm-3">{{item.total}}</div>
-                                    <div class="col-xs-4 col-sm-1">
-                                        <button class="btn btn-primary disabled">Edit</button>
-                                    </div>
                                 </div>
                             </li>
                             <li class="list-group-item">
