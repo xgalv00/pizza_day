@@ -6,17 +6,22 @@ angular.module('pizzaDayApp')
             //TODO add group validation
             var group_id = $stateParams.id;
             $scope.group = $meteor.object(Groups, group_id).subscribe('groups');
-            //TODO rewrite with fetch one item from db
             $meteor.subscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
-                $scope.current_event = $meteor.object(Events, "CMP4zHjhrJX9GHWJn");
+                $scope.current_event = $meteor.object(Events, {group: group_id, active: true});
+                $meteor.subscribe('orders', $scope.current_event._id).then(function (subsHandler) {
+                    $scope.order = $meteor.object(Orders, {
+                        event: $scope.current_event._id,
+                        user: $rootScope.currentUser._id
+                    });
+                }
+                );
             });
 
 
-            $scope.order = $meteor.object(Orders, "Ppv3C5dSCidzwgcsp").subscribe('orders', group_id);
-            $scope.users = $meteor.collection(Meteor.users, false).subscribe('group_users');
+            $scope.users = $meteor.collection(Meteor.users, false).subscribe('group_users', group_id);
             $scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
-            $scope.coupons = $meteor.collection(Coupons).subscribe('coupons');
+            $scope.coupons = $meteor.collection(Coupons).subscribe('coupons', group_id);
             $scope.images = $meteor.collectionFS(Images, false, Images).subscribe('images');
 
             $scope.addImages = function (files) {

@@ -9,8 +9,8 @@ ServiceConfiguration.configurations.insert({
     secret: "vFu7zyEhzYocEv-Xd6ahulvv"
 });
 
-Meteor.publish("group_users", function () {
-    return Meteor.users.find({}, {fields: {groups: 1, emails: 1, profile: 1}});
+Meteor.publish("group_users", function (group) {
+    return Meteor.users.find({groups: {$in: [group]}}, {fields: {groups: 1, emails: 1, profile: 1}});
 });
 
 Meteor.publish("users", function () {
