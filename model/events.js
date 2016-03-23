@@ -42,6 +42,14 @@ Meteor.methods({
     },
     addEvent: function (event) {
         // TODO add check for group
+        var group = Groups.findOne(event.group);
+        if (!group)
+            throw new Meteor.Error (404, "No such group");
+        var current_event = Events.findOne({group: event.group, active: true});
+        var ndate = stringToDate(event.date, "mm-dd-yyyy", "-");
+        event.active = (current_event) ? false : true;
+        event.date = ndate;
+        event.status = "created";
         Events.insert(event);
     },
     removeEvent: function (event) {
@@ -109,3 +117,16 @@ Meteor.methods({
         //TODO add remove group from each user
     }
 });
+
+function stringToDate(_date,_format,_delimiter)
+{
+            var formatLowerCase=_format.toLowerCase();
+            var formatItems=formatLowerCase.split(_delimiter);
+            var dateItems=_date.split(_delimiter);
+            var monthIndex=formatItems.indexOf("mm");
+            var dayIndex=formatItems.indexOf("dd");
+            var yearIndex=formatItems.indexOf("yyyy");
+            var month=parseInt(dateItems[monthIndex]);
+            month-=1;
+            return new Date(Date.UTC(dateItems[yearIndex],month,dateItems[dayIndex], 0, 0, 0));
+}
