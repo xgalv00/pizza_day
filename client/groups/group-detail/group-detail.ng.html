@@ -125,11 +125,6 @@
                         <ul class="media-list list-group">
                             <li ng-repeat="dish in dishes" class="list-group-item">
                                 <div class="row">
-                                    <div class="col-xs-4 col-sm-3">
-                                        <img class="img-thumbnail img-responsive"
-                                             ng-src="{{dish.image.url()}}" alt="{{dish.name}}">
-                                    </div>
-
                                     <div class="col-xs-8 col-sm-6">
                                         <h4>
                                             {{dish.name}}<span class="badge pull-right">{{dish.price | currency}}</span>
@@ -244,27 +239,6 @@
                         <div class="form-group">
                             <label for="add-dish-price" class="control-label">Dish price:</label>
                             <input type="text" class="form-control" id="add-dish-price" ng-model="newDish.price">
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <div ng-hide="imgSrc" ngf-drop ngf-select
-                                     ngf-change="addImages($files)"
-                                     ngf-drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}"
-                                     class="drop-box"
-                                     ngf-multiple="false" ngf-allow-dir="false" ngf-accept="'image/*'"
-                                     ngf-drop-available="dropAvailable">
-                                    <div>Click here to select image</div>
-                                    <div>
-                                        <strong>OR</strong>
-                                    </div>
-                                    <div ng-show="dropAvailable">You can also drop image to here</div>
-                                </div>
-                                <div ng-show="imgSrc" class="ng-crop-container">
-                                    <h3>Great! Now edit & crop your image...</h3><br/>
-                                    <img-crop image="imgSrc" result-image="myCroppedImage"
-                                              area-type="square"></img-crop>
-                                </div>
-                            </div>
                         </div>
                     </form>
                 </div>

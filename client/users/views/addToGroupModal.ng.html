@@ -8,7 +8,7 @@
         <form ng-submit="addUserToGroup(user._id, groupId)">
             <div class="form-group">
                 <label for="add-group-select" class="control-label">Select group to add:</label>
-                <select name="group-select" id="add-group-select" ng-model="groupId">
+                <select name="group-select" class="form-control" id="add-group-select" ng-model="groupId">
                     <option value="{{group._id}}" ng-repeat="group in owner_groups">{{ group.name }}</option>
                 </select>
             </div>

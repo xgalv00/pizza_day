@@ -44,52 +44,20 @@ angular.module('pizzaDayApp')
             //$scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
             //$scope.coupon_dishes = $meteor.collection(Dishes).subscribe('group_coupon_dishes', group_id, "test");
             $scope.coupons = $meteor.collection(Coupons).subscribe('coupons', group_id);
-            $scope.images = $meteor.collectionFS(Images, false, Images).subscribe('images');
-
-            $scope.addImages = function (files) {
-                if (files.length > 0) {
-                    var reader = new FileReader();
-
-                    reader.onload = function (e) {
-                        $scope.$apply(function () {
-                            $scope.imgSrc = e.target.result;
-                            $scope.myCroppedImage = '';
-                        });
-                    };
-
-                    reader.readAsDataURL(files[0]);
-                }
-                else {
-                    $scope.imgSrc = undefined;
-                }
-            };
 
             $scope.addDish = function (newDish) {
-                if ($scope.myCroppedImage !== '') {
-                    $scope.images.save($scope.myCroppedImage).then(function (result) {
-                        newDish.image = result[0]._id;
-                        newDish.group = $scope.group._id;
-                        newDish.owner = $rootScope.currentUser._id;
-                        $meteor.call('addDish', newDish).then(
-                            function (result) {
-                                $scope.imgSrc = undefined;
-                                $scope.myCroppedImage = '';
-                                $('#addDishModal').modal('hide');
-                            },
-                            function (err) {
-                                console.log('failed', err);
-                            }
-                        );
-                        //$scope.groups.save(newGroup);
-
-                    }, function (err) {
-                        // an error occurred while saving the todos: maybe you're not authorized
-                        console.error('An error occurred. The error message is: ' + err.message);
-                    });
-
-                } else {
-                    console.log('error cropping')
-                }
+                newDish.group = $scope.group._id;
+                newDish.owner = $rootScope.currentUser._id;
+                $meteor.call('addDish', newDish).then(
+                    function (result) {
+                        $scope.imgSrc = undefined;
+                        $scope.myCroppedImage = '';
+                        $('#addDishModal').modal('hide');
+                    },
+                    function (err) {
+                        console.log('failed', err);
+                    }
+                );
             };
 
             $scope.removeDish = function (dish) {
