@@ -25,7 +25,24 @@ angular.module('pizzaDayApp')
 
 
             $scope.users = $meteor.collection(Meteor.users, false).subscribe('group_users', group_id);
-            $scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
+            $scope.$meteorSubscribe('group_dishes', group_id).then(function (handle) {
+
+                $scope.dishes = $meteor.collection(function () {
+                    return Dishes.find ({});
+                });
+
+                $scope.coupon_dishes = $meteor.collection(function (handle) {
+                    var coupons = Coupons.find({group: group_id});
+                    var exclude_dishes = [];
+                    coupons.forEach(function (element, index, iter) {
+                        exclude_dishes.push(element.dish._id);
+                    });
+                    return Dishes.find ({group: group_id, _id: {$nin: exclude_dishes}});
+                });
+
+            });
+            //$scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
+            //$scope.coupon_dishes = $meteor.collection(Dishes).subscribe('group_coupon_dishes', group_id, "test");
             $scope.coupons = $meteor.collection(Coupons).subscribe('coupons', group_id);
             $scope.images = $meteor.collectionFS(Images, false, Images).subscribe('images');
 
