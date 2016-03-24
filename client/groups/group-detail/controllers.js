@@ -1,6 +1,6 @@
 angular.module('pizzaDayApp')
-    .controller('GroupDetailController', ['$scope', '$stateParams', '$meteor', '$rootScope',
-        function ($scope, $stateParams, $meteor, $rootScope) {
+    .controller('GroupDetailController', ['$scope', '$stateParams', '$meteor', '$rootScope', '$modal',
+        function ($scope, $stateParams, $meteor, $rootScope, $modal) {
 
             var events = $meteor.collection(Events).subscribe('events');
             //TODO add group validation
@@ -123,12 +123,36 @@ angular.module('pizzaDayApp')
                 $scope.events.remove(event);
             };
 
+            $scope.openEditDish = function (_dish) {
+
+                var modalInstance = $modal.open({
+                    controller: "EditDishModalCtrl",
+                    templateUrl: 'editDishModalContent.html',
+                    resolve: {
+                        dish: function () {
+                            return _dish;
+                        }
+                    }
+                });
+
+            };
         }
     ])
-    .controller('ModalInstanceCtrl', ['$scope', '$meteor', '$modalInstance', 'group', function ($scope, $meteor, $modalInstance, group) {
-        $scope.group = group;
-        $scope.editGroup = function (group) {
-            console.log(group.name + 'from modal instance');
-        }
+    .controller('EditDishModalCtrl', ['$scope', '$meteor', '$modalInstance', 'dish', function ($scope, $meteor, $modalInstance, dish) {
+        $scope.dish = dish;
+        $scope.editDish = function (dish_id, editedDish) {
+            editedDish._id = dish_id;
+            $meteor.call('editDish', editedDish).then(function (result) {
+                    console.log('success add event');
+                $modalInstance.close(result);
+                },
+                function (err) {
+                    console.log('error add event' + err.message);
+                });
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
     }])
 ;

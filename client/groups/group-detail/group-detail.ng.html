@@ -136,7 +136,7 @@
                                             <button class="btn btn-primary" ng-show="current_event._id"
                                                     ng-click="orderDish(dish)">Order
                                             </button>
-                                            <a class="btn btn-info disabled">
+                                            <a class="btn btn-info" ng-click="openEditDish(dish)">
                                                 <span class="glyphicon glyphicon-edit visible-xs"></span><span
                                                     class="hidden-xs">Edit</span></a>
                                             <a class="btn btn-danger" ng-click="removeDish(dish)">
@@ -329,6 +329,7 @@
         </div>
     </div>
     <!-- addCouponModal end-->
+    <div ng-include src=" 'client/groups/group-detail/editModal.ng.html' "></div>
 </div>
 
 

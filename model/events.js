@@ -55,6 +55,10 @@ Meteor.methods({
     removeEvent: function (event) {
         Events.remove(event._id);
     },
+    editDish: function (dish) {
+        // TODO add check for group
+        Dishes.update({_id: dish._id}, {$set: {name: dish.name, price: dish.price}});
+    },
     addDish: function (dish) {
         // TODO add check for group
         Dishes.insert(dish);
