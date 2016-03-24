@@ -174,3 +174,8 @@ a.remove-link-decoration:hover {
 .ng-crop-container {
     height: 350px;
 }
+
+.header-user-name {
+    color: #777;
+    padding-top: 15px;
+}

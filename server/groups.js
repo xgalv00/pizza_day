@@ -3,5 +3,6 @@ Meteor.publish("groups", function () {
 });
 
 Meteor.publish("owner_groups", function () {
+    console.log(this.userId);
   return Groups.find({owner: this.userId});
 });

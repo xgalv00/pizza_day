@@ -20,6 +20,9 @@ angular.module('pizzaDayApp')
                 $scope.imgSrc = undefined;
             }
         };
+        $scope.isOwner = function(group){
+            return $rootScope.currentUser._id == group.owner._id;
+        };
         $scope.newGroup = {};
         $scope.addGroup = function (newGroup) {
             if ($scope.myCroppedImage !== undefined && $scope.myCroppedImage !== '' ) {

@@ -49,7 +49,17 @@ angular.module('pizzaDayApp')
                 views: {
                     'content@': {
                         templateUrl: 'client/users/views/users.ng.html',
-                        controller: 'UserListController'
+                        controller: 'UserListController',
+                        resolve: {
+                            currentUser: ($q) => {
+                                if (Meteor.userId() == null) {
+                                    return $q.reject('AUTH_REQUIRED');
+                                }
+                                else {
+                                    return $q.resolve();
+                                }
+                            }
+                        }
                     }
                 }
             })
@@ -60,7 +70,17 @@ angular.module('pizzaDayApp')
                 views: {
                     'content@': {
                         templateUrl: 'client/groups/group-detail/group-detail.ng.html',
-                        controller: 'GroupDetailController'
+                        controller: 'GroupDetailController',
+                        resolve: {
+                            currentUser: ($q) => {
+                                if (Meteor.userId() == null) {
+                                    return $q.reject('AUTH_REQUIRED');
+                                }
+                                else {
+                                    return $q.resolve();
+                                }
+                            }
+                        }
                     }
                 }
             })

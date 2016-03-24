@@ -6,6 +6,9 @@ angular.module('pizzaDayApp')
             //TODO add group validation
             var group_id = $stateParams.id;
 
+            $scope.isOwner = function (group) {
+                return $rootScope.currentUser._id == group.owner._id;
+            };
             $scope.group = $meteor.object(Groups, group_id).subscribe('groups');
             $meteor.subscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);

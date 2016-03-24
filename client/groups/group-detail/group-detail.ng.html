@@ -24,7 +24,7 @@
                                         class="pull-right">100.23</span></div>
                             </div>
                             <div class="col-xs-2">
-                                <button class="btn btn-primary" type="button" data-toggle="modal"
+                                <button ng-if="isOwner(group)" class="btn btn-primary" type="button" data-toggle="modal"
                                         data-target="#addEventModal">Create Event
                                 </button>
                             </div>
@@ -152,7 +152,7 @@
                     </div>
                 </div><!-- menu-panel end -->
 
-                <div class="panel panel-default users-panel">
+                <div ng-if="isOwner(group)" class="panel panel-default users-panel">
                     <div class="panel-heading cursor-pointer" role="tab" id="headingUsers" data-toggle="collapse"
                          data-parent="#accordion"
                          data-target="#users" aria-expanded="false" aria-controls="collapseUsers">
@@ -180,7 +180,7 @@
                     </div>
                 </div><!-- users-panel end -->
 
-                <div class="panel panel-default coupons-panel">
+                <div ng-if="isOwner(group)" class="panel panel-default coupons-panel">
                     <div class="panel-heading" role="tab" id="headingCoupons">
                         <div class="row">
                             <div class="col-xs-11 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
@@ -251,7 +251,7 @@
         </div>
     </div>
     <!--addDishModal end-->
-    <div id="addEventModal" class="modal" tabindex="-1" role="dialog"
+    <div ng-if="isOwner(group)" id="addEventModal" class="modal" tabindex="-1" role="dialog"
          aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -290,7 +290,7 @@
         </div>
     </div>
     <!-- addEventModal end-->
-    <div id="addCouponModal" class="modal" tabindex="-1" role="dialog"
+    <div ng-if="isOwner(group)" id="addCouponModal" class="modal" tabindex="-1" role="dialog"
          aria-labelledby="mySmallModalLabel">
         <div class="modal-dialog">
             <div class="modal-content">
