@@ -5,11 +5,14 @@ angular.module('pizzaDayApp')
             var events = $meteor.collection(Events).subscribe('events');
             //TODO add group validation
             var group_id = $stateParams.id;
+            $meteor.subscribe('groups').then(function (subsHandler) {
+                $scope.group = $meteor.object(Groups, group_id);
+                $scope.isOwner = function (group) {
+                    if (!group) return false;
+                    return $rootScope.currentUser._id == group.owner._id;
+                };
+            });
 
-            $scope.isOwner = function (group) {
-                return $rootScope.currentUser._id == group.owner._id;
-            };
-            $scope.group = $meteor.object(Groups, group_id).subscribe('groups');
             $meteor.subscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
                 $scope.current_event = $meteor.object(Events, {group: group_id, active: true});
@@ -80,12 +83,10 @@ angular.module('pizzaDayApp')
                     group: $scope.group._id
                 };
                 $meteor.call('orderDish', order).then(function (result) {
-                        console.log('success order');
-                        //    TODO add noty call
+                        noty({text: 'Dish added to order', layout: 'topRight', type: 'success', timeout: true});
                     },
                     function (err) {
-                        console.log('error order ' + err.message);
-                        //    TODO add noty call
+                        noty({text: 'Error order ' + err.message, layout: 'topRight', type: 'error'});
                     })
             };
             $scope.updateDishOrder = function (dish, order) {
@@ -93,8 +94,7 @@ angular.module('pizzaDayApp')
                         console.log('success update dish order');
                     },
                     function (err) {
-                        console.log('error update dish order ' + err.message);
-                        //    TODO add noty call
+                        noty({text: 'Error update dish order ' + err.message, layout: 'topRight', type: 'error'});
                     })
             };
             $scope.removeCoupon = function (coupon) {
