@@ -1,21 +1,7 @@
 angular.module('pizzaDayApp')
-    .controller('GroupListController', ['$scope', '$rootScope', '$meteor', '$modal', function ($scope, $rootScope, $meteor, $modal) {
+    .controller('GroupListController', ['$scope', '$rootScope', '$meteor', function ($scope, $rootScope, $meteor) {
         $scope.groups = $meteor.collection(Groups).subscribe('groups');
         $scope.images = $meteor.collectionFS(Images, false, Images).subscribe('images');
-
-        $scope.open = function (_group) {
-
-            var modalInstance = $modal.open({
-                controller: "ModalInstanceCtrl",
-                templateUrl: 'editModalContent.html',
-                resolve: {
-                    group: function () {
-                        return _group;
-                    }
-                }
-            });
-
-        };
 
         $scope.addImages = function (files) {
             if (files.length > 0) {
@@ -58,7 +44,17 @@ angular.module('pizzaDayApp')
                 });
 
             } else {
-                console.log('error cropping')
+                newGroup.owner = $rootScope.currentUser._id;
+                $meteor.call('addGroup', newGroup).then(
+                    function (result) {
+                        $scope.imgSrc = undefined;
+                        $scope.myCroppedImage = '';
+                        $('#addGroupModal').modal('hide');
+                    },
+                    function (err) {
+                        console.log('failed', err);
+                    }
+                );
             }
         };
 
@@ -70,11 +66,5 @@ angular.module('pizzaDayApp')
                     console.log('error remove' + err.message);
                 })
         };
-    }])
-    .controller('ModalInstanceCtrl', ['$scope', '$meteor', '$modalInstance', 'group', function ($scope, $meteor, $modalInstance, group) {
-        $scope.group = group;
-        $scope.editGroup = function (group) {
-            console.log(group.name + 'from modal instance');
-        }
     }])
 ;

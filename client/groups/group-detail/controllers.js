@@ -44,15 +44,15 @@ angular.module('pizzaDayApp')
             //$scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
             //$scope.coupon_dishes = $meteor.collection(Dishes).subscribe('group_coupon_dishes', group_id, "test");
             $scope.coupons = $meteor.collection(Coupons).subscribe('coupons', group_id);
-
+            $scope.newDish = {};
             $scope.addDish = function (newDish) {
                 newDish.group = $scope.group._id;
                 newDish.owner = $rootScope.currentUser._id;
                 $meteor.call('addDish', newDish).then(
                     function (result) {
-                        $scope.imgSrc = undefined;
-                        $scope.myCroppedImage = '';
+                        $scope.newDish = {};
                         $('#addDishModal').modal('hide');
+                        //    TODO add noty call
                     },
                     function (err) {
                         console.log('failed', err);
@@ -66,6 +66,7 @@ angular.module('pizzaDayApp')
                     },
                     function (err) {
                         console.log('error remove' + err.message);
+                        //    TODO add noty call
                     })
             };
 
@@ -77,9 +78,11 @@ angular.module('pizzaDayApp')
                 };
                 $meteor.call('orderDish', order).then(function (result) {
                         console.log('success order');
+                        //    TODO add noty call
                     },
                     function (err) {
                         console.log('error order ' + err.message);
+                        //    TODO add noty call
                     })
             };
             $scope.updateDishOrder = function (dish, order) {
@@ -88,6 +91,7 @@ angular.module('pizzaDayApp')
                     },
                     function (err) {
                         console.log('error update dish order ' + err.message);
+                        //    TODO add noty call
                     })
             };
             $scope.removeCoupon = function (coupon) {
@@ -96,24 +100,28 @@ angular.module('pizzaDayApp')
                     },
                     function (err) {
                         console.log('error remove coupon' + err.message);
+                        //    TODO add noty call
                     });
             };
+            $scope.newCoupon = {};
             $scope.addCoupon = function (coupon) {
                 coupon.group = group_id;
                 $meteor.call('addCoupon', coupon).then(function (result) {
                         $('#addCouponModal').modal('hide');
+                        $scope.newCoupon = {};
                         console.log('success add');
                     },
                     function (err) {
                         console.log('error add coupon' + err.message);
                     });
             };
-
+            $scope.newEvent = {};
             $scope.addEvent = function (event) {
                 event.group = $scope.group._id;
                 $meteor.call('addEvent', event).then(function (result) {
                         $('#addEventModal').modal('hide');
-                        console.log('success add event');
+                        $scope.newEvent = {};
+                        //    TODO noty call add
                     },
                     function (err) {
                         console.log('error add event' + err.message);
@@ -122,7 +130,7 @@ angular.module('pizzaDayApp')
             $scope.removeEvent = function (event) {
                 $scope.events.remove(event);
             };
-
+            $scope.editedDish = {};
             $scope.openEditDish = function (_dish) {
 
                 var modalInstance = $modal.open({
@@ -144,7 +152,8 @@ angular.module('pizzaDayApp')
             editedDish._id = dish_id;
             $meteor.call('editDish', editedDish).then(function (result) {
                     console.log('success add event');
-                $modalInstance.close(result);
+                    $modalInstance.close(result);
+                    //    TODO noty call add
                 },
                 function (err) {
                     console.log('error add event' + err.message);

@@ -31,6 +31,103 @@ Coupons = new Mongo.Collection("coupons", {
     }
 });
 
+var Schemas = {};
+
+Schemas.Dish = new SimpleSchema({
+    name: {
+        type: String,
+        label: "Name",
+        max: 100
+    },
+    price: {
+        type: Number,
+        label: "Price",
+        min: 0,
+        decimal: true
+    },
+    group: {
+        type: String,
+        label: "Group for dish"
+    },
+    owner: {
+        type: String,
+        label: "Owner of dish"
+    }
+});
+
+Schemas.Coupon = new SimpleSchema({
+    dish: {
+        type: String,
+        label: "Dish id"
+    },
+    discount: {
+        type: Number,
+        label: "Price",
+        min: 0,
+        max: 100
+    },
+    group: {
+        type: String,
+        label: "Group id for coupon"
+    }
+});
+
+Schemas.Event = new SimpleSchema({
+    group: {
+        type: String,
+        label: "Group id for event"
+    },
+    active: {
+        type: Boolean,
+        label: "Is active event"
+    },
+    date: {
+        type: Date,
+        label: "Event date"
+    },
+    status: {
+        type: String,
+        label: "Event status"
+    }
+});
+
+Schemas.Order = new SimpleSchema({
+    event: {
+        type: String,
+        label: "event id for order"
+    },
+    user: {
+        type: String,
+        label: "user id for order"
+    },
+    group: {
+        type: String,
+        label: "Group id for order"
+    },
+    items: {
+        type: [Object],
+        label: "Set of dishes order by user for event"
+    },
+    "items.$._id": {
+        type: String,
+        label: "Dish id from menu"
+    },
+    "items.$.count": {
+        type: Number,
+        label: "Count of dish in order",
+        min: 1
+    },
+    status: {
+        type: String,
+        label: "Order status"
+    }
+});
+
+Coupons.attachSchema(Schemas.Coupon);
+Dishes.attachSchema(Schemas.Dish);
+Events.attachSchema(Schemas.Event);
+Orders.attachSchema(Schemas.Order);
+
 Meteor.methods({
     addCoupon: function (coupon) {
         console.log("coupon add");
@@ -41,7 +138,7 @@ Meteor.methods({
         Coupons.remove(coupon._id);
     },
     addEvent: function (event) {
-        // TODO add check for group
+        // TODO add check for date
         var group = Groups.findOne(event.group);
         if (!group)
             throw new Meteor.Error(404, "No such group");
@@ -56,19 +153,16 @@ Meteor.methods({
         Events.remove(event._id);
     },
     editDish: function (dish) {
-        // TODO add check for group
         Dishes.update({_id: dish._id}, {$set: {name: dish.name, price: dish.price}});
     },
     addDish: function (dish) {
-        // TODO add check for group
         Dishes.insert(dish);
     },
     removeDish: function (dish) {
         Dishes.remove(dish._id);
-        //TODO add remove group from each user
+        //TODO add remove dish from each user
     },
     updateDishOrder: function (dish_id, order_id, count) {
-        //TODO check dish_id is string and count is number
         var order = Orders.findOne(order_id);
         if (!order)
             throw new Meteor.Error(404, "No such order");
@@ -89,12 +183,8 @@ Meteor.methods({
             delete order.dish;
             order.items = [{
                 _id: dish._id,
-                name: dish.name,
-                price: dish.price,
-                count: 1,
-                //total: dish.price
+                count: 1
             }];
-            //order.total = dish.price;
             //TODO replace by map with statuses
             order.user = this.userId;
             order.status = "created";
@@ -107,8 +197,6 @@ Meteor.methods({
                     $addToSet: {
                         "items": {
                             _id: order.dish._id,
-                            name: order.dish.name,
-                            price: order.dish.price,
                             count: 1
                         }
                     }

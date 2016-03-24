@@ -6,18 +6,48 @@ Groups = new Mongo.Collection("groups", {
         return doc;
     }
 });
-
-//Groups.allow({
-//    insert: function (userId) {
-//      return (userId ? true : false);
+//var Schemas = {};
+//Schemas.Group = new SimpleSchema({
+//    owner: {
+//        type: String,
+//        label: "Owner's user id"
 //    },
-//    remove: function (userId) {
-//      return (userId ? true : false);
+//    name: {
+//        type: String,
+//        label: "Name"
 //    },
-//    update: function (userId) {
-//      return (userId ? true : false);
+//    image: {
+//        type: Object,
+//        optional: true,
+//        label: "Group's logo"
+//    },
+//    users: {
+//        type: [String],
+//        optional: true,
+//        label: "Users added to group"
 //    }
-//  });
+//});
+
+Groups.attachSchema(new SimpleSchema({
+    owner: {
+        type: String,
+        label: "Owner's user id"
+    },
+    name: {
+        type: String,
+        label: "Name"
+    },
+    image: {
+        type: FS.File,
+        optional: true,
+        label: "Group's logo"
+    },
+    users: {
+        type: [String],
+        optional: true,
+        label: "Users added to group"
+    }
+}));
 
 Meteor.methods({
     addUser: function (userId, groupId) {

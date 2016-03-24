@@ -5,7 +5,7 @@
         <h4 class="modal-title">Edit Dish</h4>
     </div>
     <div class="modal-body">
-        <form ng-submit="editDish(dish._id, editedDish);editedDish=''">
+        <form ng-submit="editDish(dish._id, editedDish)">
             <div class="form-group">
                 <label for="edit-group-name" class="control-label">Dish name:</label>
                 <input type="text" class="form-control" id="edit-group-name" ng-model="editedDish.name" ng-init="editedDish.name=dish.name">
@@ -19,7 +19,7 @@
             <div class="form-group">
                 <button type="button" class="btn btn-default" ng-click="cancel()">Close
                 </button>
-                <input type="submit" class="btn btn-primary" value="Edit group">
+                <input type="submit" class="btn btn-primary" value="Edit dish">
             </div>
         </form>
     </div>
