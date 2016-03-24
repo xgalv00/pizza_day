@@ -20,9 +20,9 @@ angular.module('pizzaDayApp')
                 $scope.imgSrc = undefined;
             }
         };
-
+        $scope.newGroup = {};
         $scope.addGroup = function (newGroup) {
-            if ($scope.myCroppedImage !== '') {
+            if ($scope.myCroppedImage !== undefined && $scope.myCroppedImage !== '' ) {
                 $scope.images.save($scope.myCroppedImage).then(function (result) {
                     newGroup.image = result[0]._id;
                     newGroup.owner = $rootScope.currentUser._id;
@@ -30,6 +30,7 @@ angular.module('pizzaDayApp')
                         function (result) {
                             $scope.imgSrc = undefined;
                             $scope.myCroppedImage = '';
+                            $scope.newGroup = {};
                             $('#addGroupModal').modal('hide');
                         },
                         function (err) {
@@ -49,6 +50,7 @@ angular.module('pizzaDayApp')
                     function (result) {
                         $scope.imgSrc = undefined;
                         $scope.myCroppedImage = '';
+                        $scope.newGroup = {};
                         $('#addGroupModal').modal('hide');
                     },
                     function (err) {
