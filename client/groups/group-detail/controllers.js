@@ -17,11 +17,22 @@ angular.module('pizzaDayApp')
             //    startDate: new Date(),
             //    format: 'mm-dd-yyyy'
             //});
-            $meteor.subscribe('events', group_id).then(function (subsHandler) {
+            $scope.newEventStatus = "";
+            $scope.eventStatusChange = function(newEventStatus){
+                $meteor.call('changeEventStatus', $scope.current_event._id, newEventStatus).then(
+                    function (result) {
+                        console.log('status changed successfully')
+                    },
+                    function (err) {
+                        noty({text: 'Event status change error: ' + err.message, type: 'error', layout: 'topRight'});
+                    }
+                );
+            };
+            $scope.$meteorSubscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
                 $scope.current_event = $meteor.object(Events, {group: group_id, active: true});
 
-                $meteor.subscribe('orders', $scope.current_event._id).then(function (subsHandler) {
+                $scope.$meteorSubscribe('orders', $scope.current_event._id).then(function (subsHandler) {
                         $scope.order = $meteor.object(Orders, {
                             event: $scope.current_event._id,
                             user: $rootScope.currentUser._id

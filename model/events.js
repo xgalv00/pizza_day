@@ -146,11 +146,16 @@ Meteor.methods({
         var ndate = stringToDate(event.date, "mm-dd-yyyy", "-");
         event.active = (current_event) ? false : true;
         event.date = ndate;
-        event.status = "created";
+        event.status = (event.active) ? "ordering" : "created";
         Events.insert(event);
     },
     removeEvent: function (event) {
         Events.remove(event._id);
+    },
+    changeEventStatus: function (event_id, newStatus) {
+        //TODO check for status
+        //TODO change active event after delivered status
+        Events.update(event_id, {$set: {status: newStatus}});
     },
     editDish: function (dish) {
         Dishes.update({_id: dish._id}, {$set: {name: dish.name, price: dish.price}});
@@ -218,7 +223,7 @@ Meteor.methods({
         var orders_count = Orders.find({event: event._id, status: "confirmed", user: {$in: users}}).count();
         if (users.length == orders_count){
             console.log("send email");
-            Events.update({_id: event._id}, {$set: {status: "ordering"}});
+            Events.update({_id: event._id}, {$set: {status: "ordered"}});
         }
     }
 });

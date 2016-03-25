@@ -2,7 +2,7 @@
 
     <div class="row">
         <div class="col-md-2 hidden-sm hidden-xs">
-            <img class="media-object img-thumbnail" src="/cfs/files/images/T24G8XorBL2ER8xHW" alt="{{group.name}}">
+            <!--<img class="media-object img-thumbnail" ng-src="{{group.image.url()}}" alt="{{group.name}}">-->
         </div>
         <div class="col-md-10 col-xs-12"><h3>{{group.name}}</h3></div>
     </div>
@@ -15,16 +15,27 @@
                         <div class="row">
                             <div class="col-xs-10 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
                                  data-target="#event" aria-expanded="false" aria-controls="collapseEvent">
-                                <div class="col-xs-6 col-sm-4">
+                                <div class="col-xs-4">
                                     <h4 class="panel-title">
                                         Next event
                                     </h4></div>
-                                <div class="col-sm-4 hidden-xs" title="Confirmed/total users">2/3</div>
-                                <div class="col-xs-6 col-sm-4" title="Total order amount"><span
-                                        class="pull-right">100.23</span></div>
+                                <div class="col-xs-4">{{current_event.date | date}}</div>
+                                <div class="col-xs-4" ng-if="current_event.status !== 'ordered' && current_event.status !== 'delivering'">{{current_event.status}}</div>
+                                <div class="col-xs-4" ng-if="current_event.status === 'ordered'">
+                                    <select name="" class="form-control" ng-init="newEventStatus='ordered'" ng-model="newEventStatus" ng-change="eventStatusChange(newEventStatus)">
+                                        <option value="ordered">Ordered</option>
+                                        <option value="delivering">Delivering</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-4" ng-if="current_event.status === 'delivering'">
+                                    <select name="" class="form-control" ng-init="newEventStatus='delivering'" ng-model="newEventStatus" ng-change="eventStatusChange(newEventStatus)">
+                                        <option value="delivering">Delivering</option>
+                                        <option value="delivered">Delivered</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="col-xs-2">
-                                <button  class="btn btn-primary" type="button" data-toggle="modal"
+                                <button ng-if="isOwner(group)"  class="btn btn-primary" type="button" data-toggle="modal"
                                         data-target="#addEventModal">Create Event
                                 </button>
                             </div>
