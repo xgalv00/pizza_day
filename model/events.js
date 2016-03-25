@@ -213,7 +213,7 @@ Meteor.methods({
         console.log("Order dish was called " + user);
         //TODO add remove group from each user
     },
-    confirmOrder: function (order_id){
+    confirmOrder: function (order_id) {
         //TODO check order
         var order = Orders.findOne(order_id);
         Orders.update(order._id, {$set: {status: "confirmed"}});
@@ -221,8 +221,23 @@ Meteor.methods({
         var event = Events.findOne(order.event);
         var users = [].concat(group.users, [group.owner._id]);
         var orders_count = Orders.find({event: event._id, status: "confirmed", user: {$in: users}}).count();
-        if (users.length == orders_count){
-            console.log("send email");
+        //!_.contains(party.invited, userId)
+        if (users.length == orders_count) {
+            var from = contactEmail(Meteor.users.findOne(this.userId));
+            var to = 'galkin.vitaly@gmail.com';
+
+            if (Meteor.isServer && to) {
+                // This code only runs on the server. If you didn't want clients
+                // to be able to see it, you could move it to a separate file.
+                Email.send({
+                    from: "noreply@socially.com",
+                    to: to,
+                    replyTo: from || undefined,
+                    subject: "Order: " + order._id,
+                    text: "Hey, I just invited you to '" + order._id+ "' on Socially." +
+                    "\n\nCome check it out: " + Meteor.absoluteUrl() + "\n"
+                });
+            }
             Events.update({_id: event._id}, {$set: {status: "ordered"}});
         }
     }
@@ -239,3 +254,11 @@ function stringToDate(_date, _format, _delimiter) {
     month -= 1;
     return new Date(Date.UTC(dateItems[yearIndex], month, dateItems[dayIndex], 0, 0, 0));
 }
+
+var contactEmail = function (user) {
+    if (user.emails && user.emails.length)
+        return user.emails[0].address;
+    if (user.services && user.services.facebook && user.services.facebook.email)
+        return user.services.facebook.email;
+    return null;
+};
