@@ -219,13 +219,14 @@ Meteor.methods({
         Orders.update(order._id, {$set: {status: "confirmed"}});
         var group = Groups.findOne(order.group);
         var event = Events.findOne(order.event);
-        var users = [].concat(group.users, [group.owner._id]);
+        var users = group.users || [];
+        users.push(group.owner._id);
         var orders_count = Orders.find({event: event._id, status: "confirmed", user: {$in: users}}).count();
         //!_.contains(party.invited, userId)
         if (users.length == orders_count) {
             var from = contactEmail(Meteor.users.findOne(this.userId));
             var to = 'galkin.vitaly@gmail.com';
-
+            Events.update({_id: event._id}, {$set: {status: "ordered"}});
             if (Meteor.isServer && to) {
                 // This code only runs on the server. If you didn't want clients
                 // to be able to see it, you could move it to a separate file.
@@ -238,7 +239,6 @@ Meteor.methods({
                     "\n\nCome check it out: " + Meteor.absoluteUrl() + "\n"
                 });
             }
-            Events.update({_id: event._id}, {$set: {status: "ordered"}});
         }
     }
 });
