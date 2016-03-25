@@ -207,6 +207,19 @@ Meteor.methods({
 
         console.log("Order dish was called " + user);
         //TODO add remove group from each user
+    },
+    confirmOrder: function (order_id){
+        //TODO check order
+        var order = Orders.findOne(order_id);
+        Orders.update(order._id, {$set: {status: "confirmed"}});
+        var group = Groups.findOne(order.group);
+        var event = Events.findOne(order.event);
+        var users = [].concat(group.users, [group.owner._id]);
+        var orders_count = Orders.find({event: event._id, status: "confirmed", user: {$in: users}}).count();
+        if (users.length == orders_count){
+            console.log("send email");
+            Events.update({_id: event._id}, {$set: {status: "ordering"}});
+        }
     }
 });
 

@@ -85,7 +85,8 @@
                                 <div class="row">
                                     <div class="col-xs-4 col-sm-4">{{item.name}}</div>
                                     <div class="col-xs-2 col-sm-1">
-                                        <input class="form-control" ng-model="item.count"
+                                        <div ng-if="order.isConfirmed()">{{item.count}}</div>
+                                        <input class="form-control" ng-if="order.isCreated()" ng-model="item.count"
                                                ng-change="updateDishOrder(item, order)" title="Count to order">
                                     </div>
                                     <div class="col-xs-4 col-sm-2"><span class="full-price" ng-if="item.full_price">{{item.full_price}}/</span>
@@ -94,7 +95,7 @@
                                     <div class="col-xs-4 col-sm-3">{{item.total}}</div>
                                 </div>
                             </li>
-                            <li class="list-group-item">
+                            <li class="list-group-item" ng-if="order.isCreated()">
                                 <div class="row">
                                     <div class="col-xs-2 pull-right">
                                         <button class="btn btn-primary" ng-click="confirmOrder(order)">Confirm</button>
@@ -133,7 +134,7 @@
 
                                     <div class="col-xs-6 col-sm-3">
                                         <div class="pull-right">
-                                            <button class="btn btn-primary" ng-show="current_event._id"
+                                            <button class="btn btn-primary" ng-if="current_event._id && !order.isConfirmed()"
                                                     ng-click="orderDish(dish)">Order
                                             </button>
                                             <a class="btn btn-info" ng-click="openEditDish(dish)">
@@ -267,7 +268,7 @@
                                 <div class="col-xs-12 col-sm-4"><label for="create-event-date" class="control-label">Event
                                     date:</label></div>
                                 <div class="col-xs-12 col-sm-8">
-                                    <div class="input-group date">
+                                    <div class="input-group date" data-provide="datepicker" data-date-format="mm-dd-yyyy" data-date-start-date="{{current_event.date}}">
                                         <input type="text" disabled="disabled" id="create-event-date"
                                                class="form-control" ng-model="newEvent.date">
 

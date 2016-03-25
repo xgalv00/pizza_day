@@ -12,19 +12,26 @@ angular.module('pizzaDayApp')
                     return $rootScope.currentUser._id == group.owner._id;
                 };
             });
-
+            //console.log($(".input-group.date"));
+            //$(".input-group.date").datepicker({
+            //    startDate: new Date(),
+            //    format: 'mm-dd-yyyy'
+            //});
             $meteor.subscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
                 $scope.current_event = $meteor.object(Events, {group: group_id, active: true});
-                $(".input-group.date").datepicker({
-                    startDate: $scope.current_event.date,
-                    format: 'mm-dd-yyyy'
-                });
+
                 $meteor.subscribe('orders', $scope.current_event._id).then(function (subsHandler) {
                         $scope.order = $meteor.object(Orders, {
                             event: $scope.current_event._id,
                             user: $rootScope.currentUser._id
                         });
+                        $scope.order.isConfirmed = function () {
+                            return this.status === "confirmed";
+                        };
+                        $scope.order.isCreated = function () {
+                            return this.status === "created";
+                        };
                     }
                 );
             });
@@ -75,7 +82,14 @@ angular.module('pizzaDayApp')
                         //    TODO add noty call
                     })
             };
-
+            $scope.confirmOrder = function (order) {
+                $meteor.call('confirmOrder', order._id).then(function (result) {
+                        noty({text: 'Order successfully confirmed', layout: 'topRight', type: 'success', timeout: true});
+                    },
+                    function (err) {
+                        noty({text: 'Error confirm order ' + err.message, layout: 'topRight', type: 'error'});
+                    });
+            };
             $scope.orderDish = function (dish) {
                 var order = {
                     dish: dish,
