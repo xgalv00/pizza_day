@@ -2,6 +2,7 @@ angular.module('pizzaDayApp')
     .controller('GroupListController', ['$scope', '$rootScope', '$meteor', function ($scope, $rootScope, $meteor) {
         $scope.groups = $meteor.collection(Groups).subscribe('groups');
         $scope.images = $meteor.collectionFS(Images, false, Images).subscribe('images');
+        $scope.$meteorSubscribe('users');
 
         $scope.addImages = function (files) {
             if (files.length > 0) {

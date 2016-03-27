@@ -48,7 +48,7 @@ angular.module('pizzaDayApp')
             });
 
 
-            $scope.users = $meteor.collection(Meteor.users, false).subscribe('group_users', group_id);
+            $scope.users = $meteor.collection(Meteor.users, false).subscribe('users');
             $scope.$meteorSubscribe('group_dishes', group_id).then(function (handle) {
 
                 $scope.dishes = $meteor.collection(function () {

@@ -130,57 +130,62 @@ Orders.attachSchema(Schemas.Order);
 
 Meteor.methods({
     addCoupon: function (coupon) {
-        console.log("coupon add");
+        var group = Utils.getOr404(Groups, coupon.group, "group");
+        Utils.checkIsOwner(group);
         Coupons.insert(coupon);
     },
     removeCoupon: function (coupon) {
-        console.log("coupon remove");
+        var group = Utils.getOr404(Groups, coupon.group, "group");
+        Utils.checkIsOwner(group);
         Coupons.remove(coupon._id);
     },
     addEvent: function (event) {
-        // TODO add check for date
-        var group = Groups.findOne(event.group);
-        if (!group)
-            throw new Meteor.Error(404, "No such group");
+        var group = Utils.getOr404(Groups, coupon.group, "group");
+        Utils.checkIsOwner(group);
         var current_event = Events.findOne({group: event.group, active: true});
-        var ndate = stringToDate(event.date, "mm-dd-yyyy", "-");
+        var ndate = Utils.stringToDate(event.date, "mm-dd-yyyy", "-");
         event.active = (current_event) ? false : true;
         event.date = ndate;
         event.status = (event.active) ? "ordering" : "created";
         Events.insert(event);
     },
-    removeEvent: function (event) {
-        Events.remove(event._id);
-    },
     changeEventStatus: function (event_id, newStatus) {
         //TODO check for status
         //TODO change active event after delivered status
+        var event = Utils.getOr404(Events, event_id, "event");
+        var group = Utils.getOr404(Groups, event.group, "group");
+        Utils.checkIsOwner(group);
         Events.update(event_id, {$set: {status: newStatus}});
     },
     editDish: function (dish) {
+        var dbDish = Utils.getOr404(Dishes, dish, "dish");
+        var group = Utils.getOr404(Groups, dbDish.group, "group");
+        Utils.checkIsInGroup(group);
+        //TODO add check if dish in order, could not remove dish when ordered
         Dishes.update({_id: dish._id}, {$set: {name: dish.name, price: dish.price}});
     },
     addDish: function (dish) {
+        var group = Utils.getOr404(Groups, dish.group, "group");
+        Utils.checkIsInGroup(group);
         Dishes.insert(dish);
     },
     removeDish: function (dish) {
+        var group = Utils.getOr404(Groups, dish.group, "group");
+        Utils.checkIsInGroup(group);
         Dishes.remove(dish._id);
-        //TODO add remove dish from each user
+        //TODO add check if dish in order, could not remove dish when ordered
     },
     updateDishOrder: function (dish_id, order_id, count) {
-        var order = Orders.findOne(order_id);
-        if (!order)
-            throw new Meteor.Error(404, "No such order");
-        Orders.update({_id: order._id, "items._id": dish_id}, {$set: {"items.$.count": parseInt(count, 10)}});
+        var order = Utils.getOr404(Orders, order_id, "order");
+        var dish = Utils.getOr404(Dishes, dish_id, "dish");
+        Utils.checkIsBelongToUser(order.user);
+        Orders.update({_id: order._id, "items._id": dish._id}, {$set: {"items.$.count": parseInt(count, 10)}});
     },
     orderDish: function (order) {
         var user = this.userId;
-        var group = Groups.findOne(order.group);
-        var event = Events.findOne(order.event);
-        if (!event)
-            throw new Meteor.Error(404, "No such event");
-        if (!group)
-            throw new Meteor.Error(404, "No such group");
+        var event = Utils.getOr404(Events, order.event, "event");
+        var group = Utils.getOr404(Groups, order.group, "group");
+        Utils.checkIsInGroup(group);
         var forder = Orders.findOne({user: user, event: event._id});
         if (!forder) {
             console.log("create order");
@@ -196,6 +201,7 @@ Meteor.methods({
             Orders.insert(order);
             console.log("success create order")
         } else {
+            Utils.checkIsBelongToUser(forder.user);
             Orders.update({_id: forder._id, "items._id": order.dish._id}, {$inc: {"items.$.count": 1}});
             Orders.update({_id: forder._id, "items._id": {$ne: order.dish._id}},
                 {
@@ -211,20 +217,20 @@ Meteor.methods({
         }
 
         console.log("Order dish was called " + user);
-        //TODO add remove group from each user
     },
     confirmOrder: function (order_id) {
-        //TODO check order
-        var order = Orders.findOne(order_id);
+        var order = Utils.getOr404(Orders, order_id, "order");
+        var event = Utils.getOr404(Events, order.event, "event");
+        var group = Utils.getOr404(Groups, order.group, "group");
+        Utils.checkIsBelongToUser(order.user);
         Orders.update(order._id, {$set: {status: "confirmed"}});
-        var group = Groups.findOne(order.group);
-        var event = Events.findOne(order.event);
         var users = group.users || [];
         users.push(group.owner._id);
         var orders_count = Orders.find({event: event._id, status: "confirmed", user: {$in: users}}).count();
         //!_.contains(party.invited, userId)
         if (users.length == orders_count) {
-            var from = contactEmail(Meteor.users.findOne(this.userId));
+            var from = Utils.contactEmail(Meteor.users.findOne(this.userId));
+            //TODO update to field
             var to = 'galkin.vitaly@gmail.com';
             Events.update({_id: event._id}, {$set: {status: "ordered"}});
             if (Meteor.isServer && to) {
@@ -235,7 +241,7 @@ Meteor.methods({
                     to: to,
                     replyTo: from || undefined,
                     subject: "Order: " + order._id,
-                    text: "Hey, I just invited you to '" + order._id+ "' on Socially." +
+                    text: "Hey, I just invited you to '" + order._id + "' on Socially." +
                     "\n\nCome check it out: " + Meteor.absoluteUrl() + "\n"
                 });
             }
@@ -243,22 +249,49 @@ Meteor.methods({
     }
 });
 
-function stringToDate(_date, _format, _delimiter) {
-    var formatLowerCase = _format.toLowerCase();
-    var formatItems = formatLowerCase.split(_delimiter);
-    var dateItems = _date.split(_delimiter);
-    var monthIndex = formatItems.indexOf("mm");
-    var dayIndex = formatItems.indexOf("dd");
-    var yearIndex = formatItems.indexOf("yyyy");
-    var month = parseInt(dateItems[monthIndex]);
-    month -= 1;
-    return new Date(Date.UTC(dateItems[yearIndex], month, dateItems[dayIndex], 0, 0, 0));
-}
+var Utils = {
+    checkIsOwner: (group) => {
+        var userId = Meteor.userId();
+        if (!(userId && userId == group.owner))
+            throw new Meteor.Error(403, "User is not owner");
+    },
+    checkIsInGroup: (group) => {
+        var userId = Meteor.userId();
+        if (!(userId && _.contains(group.users, userId)))
+            throw new Meteor.Error(403, "User is not in group");
+    },
+    checkIsBelongToUser: (userIdFromObj) => {
+        var userId = Meteor.userId();
+        if (!(userId && userIdFromObj == userId))
+            throw new Meteor.Error(403, "You are not owner of this object");
+    },
+    getOr404: (collection, selector, msgVar) => {
+        var test = collection.findOne(selector);
+        if (!test)
+            throw new Meteor.Error(404, "No such " + msgVar);
+        return test;
+    },
+    stringToDate: (_date, _format, _delimiter) => {
+        if (!_date) {
+            var now = new Date();
+            return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours());
+        }
+        var formatLowerCase = _format.toLowerCase();
+        var formatItems = formatLowerCase.split(_delimiter);
+        var dateItems = _date.split(_delimiter);
+        var monthIndex = formatItems.indexOf("mm");
+        var dayIndex = formatItems.indexOf("dd");
+        var yearIndex = formatItems.indexOf("yyyy");
+        var month = parseInt(dateItems[monthIndex]);
+        month -= 1;
+        return new Date(Date.UTC(dateItems[yearIndex], month, dateItems[dayIndex], 0, 0, 0));
+    },
+    contactEmail: (user) => {
+        if (user.emails && user.emails.length)
+            return user.emails[0].address;
+        if (user.services && user.services.facebook && user.services.facebook.email)
+            return user.services.facebook.email;
+        return null;
 
-var contactEmail = function (user) {
-    if (user.emails && user.emails.length)
-        return user.emails[0].address;
-    if (user.services && user.services.facebook && user.services.facebook.email)
-        return user.services.facebook.email;
-    return null;
+    }
 };

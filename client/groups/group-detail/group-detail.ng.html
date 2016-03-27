@@ -20,14 +20,14 @@
                                         Next event
                                     </h4></div>
                                 <div class="col-xs-4">{{current_event.date | date}}</div>
-                                <div class="col-xs-4" ng-if="current_event.status !== 'ordered' && current_event.status !== 'delivering'">{{current_event.status}}</div>
-                                <div class="col-xs-4" ng-if="current_event.status === 'ordered'">
+                                <div class="col-xs-4" ng-if="current_event.status !== 'ordered' && current_event.status !== 'delivering' || !isOwner(group)">{{current_event.status}}</div>
+                                <div class="col-xs-4" ng-if="current_event.status === 'ordered' && isOwner(group)">
                                     <select name="" class="form-control" ng-init="newEventStatus='ordered'" ng-model="newEventStatus" ng-change="eventStatusChange(newEventStatus)">
                                         <option value="ordered">Ordered</option>
                                         <option value="delivering">Delivering</option>
                                     </select>
                                 </div>
-                                <div class="col-xs-4" ng-if="current_event.status === 'delivering'">
+                                <div class="col-xs-4" ng-if="current_event.status === 'delivering' && isOwner(group)">
                                     <select name="" class="form-control" ng-init="newEventStatus='delivering'" ng-model="newEventStatus" ng-change="eventStatusChange(newEventStatus)">
                                         <option value="delivering">Delivering</option>
                                         <option value="delivered">Delivered</option>
