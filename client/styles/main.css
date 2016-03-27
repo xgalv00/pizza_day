@@ -179,3 +179,12 @@ a.remove-link-decoration:hover {
     color: #777;
     padding-top: 15px;
 }
+.row-footer a {
+    font-size: 19px;
+    padding-right: 20px;
+}
+
+.row-footer a.btn-social-icon {
+    position: relative;
+    bottom: 4px;
+}

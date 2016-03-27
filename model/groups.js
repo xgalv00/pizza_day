@@ -65,10 +65,6 @@ Meteor.methods({
     addGroup: function (group) {
         // TODO add check for group
         Groups.insert(group);
-    },
-    removeGroup: function (group) {
-        Groups.remove(group._id);
-        //TODO add remove group from each user
     }
 });
 

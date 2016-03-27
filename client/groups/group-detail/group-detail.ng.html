@@ -13,8 +13,7 @@
                 <div class="panel panel-default event-panel">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-xs-10 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
-                                 data-target="#event" aria-expanded="false" aria-controls="collapseEvent">
+                            <div class="col-xs-10" aria-controls="collapseEvent">
                                 <div class="col-xs-4">
                                     <h4 class="panel-title">
                                         Next event
@@ -40,37 +39,6 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-                    <div id="event" class="panel-collapse collapse in" role="tabpanel"
-                         aria-labelledby="headingEvent">
-                        <ul class="list-group">
-                            <!--<li ng-repeat="user in event.users" class="list-group-item">-->
-                            <li class="list-group-item" ng-repeat="user in event.users">
-                                <div class="row">
-                                    <div class="col-xs-4 col-sm-4"><h4>{{user.email}}</h4></div>
-                                    <div class="col-sm-5 hidden-xs">
-                                        <p ng-repeat="item in user.items">{{item.name}}:{{item.price}}</p>
-                                    </div>
-                                    <div class="col-sm-3"><h5 class="pull-right">{{user.total}}</h5></div>
-                                </div>
-                            </li>
-                            <li class="list-group-item" ng-repeat="cuser in event.confirm_users">
-                                <div class="row">
-                                    <div class="col-xs-7"><h4>{{cuser.email}}</h4></div>
-                                    <div class="col-xs-5">
-                                        <div class="pull-right">
-                                            <a class="btn btn-info disabled">
-                                                <span class="glyphicon glyphicon-envelope visible-xs"></span><span
-                                                    class="hidden-xs">Send reminder</span></a>
-                                            <a class="btn btn-danger disabled" title="Remove from event">
-                                                <span class="glyphicon glyphicon-remove visible-xs"></span><span
-                                                    class="hidden-xs">Remove</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
                     </div>
                 </div><!-- event-panel end -->
 
@@ -195,7 +163,7 @@
                 <div ng-if="isOwner(group)" class="panel panel-default coupons-panel">
                     <div class="panel-heading" role="tab" id="headingCoupons">
                         <div class="row">
-                            <div class="col-xs-11 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
+                            <div class="col-xs-11" ng-class="{true:'cursor-pointer', false:''}[coupons.length > 0]" data-toggle="collapse" data-parent="#accordion"
                                  data-target="#coupons" aria-expanded="false" aria-controls="collapseCoupons">
                                 <h4 class="panel-title">
                                     Coupons
@@ -208,7 +176,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="coupons" class="panel-collapse collapse" role="tabpanel"
+                    <div ng-if="coupons.length > 0" id="coupons" class="panel-collapse collapse" role="tabpanel"
                          aria-labelledby="headingCoupons">
                         <ul class="list-group">
                             <li ng-repeat="coupon in coupons" class="list-group-item">

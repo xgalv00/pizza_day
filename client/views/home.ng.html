@@ -1,73 +1,70 @@
-<div class="container" ng-controller="IndexController">
+<div class="container home-content" ng-controller="IndexController">
     <div class="row row-content">
-        <div class="col-xs-12 col-sm-3 col-sm-push-9">
-            <p style="padding:20px;"></p>
+        <div class="col-xs-12">
+            <h3>Introduction</h3>
 
-            <h3 align=center>Our Lipsmacking Culinary Creations</h3>
+            <p>You are software engineer in small development company. Every Wednesday your teammates
+                order pizza delivery in Local Restaurant. Usually there is about 10 - 15 order items (pizzas, juice
+                etc.) per order. Also, Local Restaurant provides discount coupons if pizza delivery guy was late. </p>
         </div>
-        <div class="col-xs-12 col-sm-9 col-sm-pull-3">
-            <div class="media">
-                <div class="media-left media-middle">
-                    <a ui-sref="app.dishdetails({id: dish._id})">
-                        <img class="media-object img-thumbnail"
-                             ng-src="{{dish.image}}" alt="Uthappizza">
-                    </a>
-                </div>
-                <div class="media-body">
-                    <h2 class="media-heading">{{dish.name}}
-                        <span class="label label-danger">{{dish.label}}</span>
-                        <span class="badge">{{dish.price | currency}}</span></h2>
+        <div class="col-xs-12">
+            <h3>The Problem</h3>
 
-                    <p>{{dish.description}}</p>
-                </div>
-            </div>
+            <p>
+                After pizza was ordered you need to calculate how many $ each of your co workers owes you in
+                order to pay pizza delivery guy. So, you need to split the check. And there is another problem.
+                Each time you have 1 or couple coupons for free pizza. To keep order you need split this
+                discount (pizza price) between all coworkers who ordered pizza. Also, probably you noticed
+                that you need to do same procedure every Wednesday and it is annoying. So, why not to write
+                small app for it? Let’s call it “Pizza Day”.
+            </p>
+        </div>
+        <div class="col-xs-12">
+            <h3>App features </h3>
+
+            <ul>
+                <li>sign in/sign up</li>
+                <li>Google authentication</li>
+                <li>create users Groups (so, you don’t need to search for your co workers over whole users
+                    list in app). Only Group creator may invite or remove people. Group should have name,
+                    image/logo, menu items that can be ordered in this group (made for simplicity, so we
+                    avoiding creating of restaurant).
+                </li>
+                <li>Menu item should contain it’s name and price. Any group participant can create menu
+                    items or edit existing ones.
+                </li>
+                <li>Group creator is able to add/remove free pizza coupons (each coupon works only for
+                    specific pizza (menu item)
+                </li>
+                <li>create new “Pizza day” Event. Event contains event date, event status
+                    (ordering/ordered/delivering/delivered), user’s Group (that takes part in Event). Also, each user
+                    from the Group should confirm he is taking part in Event, so he can add order
+                    items in this event.
+                </li>
+                <li>After Event creating each group participant (user) may choose menu items he want to
+                    order (+ specify count).
+                </li>
+                <li>When all event participants confirmed their order event status is changing to ordered.
+                    So, each user receives to his email list of items he ordered and total amount $ he should
+                    pay to event creator.
+                </li>
+                <li>Event creator receives same email as simple participants + event summary (list menu
+                    items he should order in “Local Restaurant”). After ordering event creator is able to
+                    change event status to delivering.
+                </li>
+            </ul>
+        </div>
+        <div class="col-xs-12">
+            <h3>Technical requirements/stack</h3>
+
+            <ul>
+                <li>Meteor</li>
+                <li>Blaze/React/Angular</li>
+                <li>MongoDB</li>
+                <li>you can use any packages published on Atmosphere (except autoform)</li>
+                <li>server side email notification rendering using some template engine (like handlebars)</li>
+            </ul>
         </div>
     </div>
 
-
-    <div class="row row-content">
-        <div class="col-xs-12 col-sm-3">
-
-            <h3 align=center>This Month's Promotions</h3>
-        </div>
-        <div class="col-xs-12 col-sm-9">
-            <div class="media">
-                <div class="media-left media-middle">
-                    <a ui-sref="app.dishdetails({id: promo._id})">
-                        <img class="media-object img-thumbnail"
-                             ng-src="{{promo.image}}" alt="Uthappizza">
-                    </a>
-                </div>
-                <div class="media-body">
-                    <h2 class="media-heading">{{promo.name}}
-                        <span class="label label-danger">{{promo.label}}</span>
-                        <span class="badge">{{promo.price | currency}}</span></h2>
-
-                    <p>{{promo.description}}</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="row row-content">
-        <div class="col-xs-12 col-sm-3 col-sm-push-9">
-
-
-            <h3 align=center>Meet our Culinary Specialists</h3>
-        </div>
-        <div class="col-xs-12 col-sm-9 col-sm-pull-3">
-            <div class="media">
-                <div class="media-left media-middle">
-                    <img ng-src="{{leader.image}}" class="media-object img-thumbnail">
-                </div>
-
-                <div class="media-body">
-                    <h2 class="media-heading">{{leader.name}}</h2>
-
-                    <div>{{leader.description}}</div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>

@@ -13,7 +13,7 @@
                 <ul class="media-list list-group">
                     <li ng-repeat="group in groups" class="list-group-item">
                         <div class="row">
-                            <div class="col-xs-10">
+                            <div class="col-xs-12">
                                 <a class="remove-link-decoration" ui-sref="app.groupdetail({id: group._id})">
                                     <div class="media">
                                         <div class="media-left media-middle">
@@ -33,9 +33,6 @@
                                         </div>
                                     </div>
                                 </a>
-                            </div>
-                            <div class="col-xs-2">
-                                <a class="btn btn-danger" ng-if="isOwner(group)" ng-click="removeGroup(group)">Remove</a>
                             </div>
                         </div>
 
