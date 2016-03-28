@@ -4,9 +4,9 @@ ServiceConfiguration.configurations.remove({
 });
 ServiceConfiguration.configurations.insert({
     service: "google",
-    clientId: "777285204196-afhbqkbf3bhg6pkd3n9m1bqq41r3rbot.apps.googleusercontent.com",
+    clientId: Meteor.settings.googleClientId,
     loginStyle: "popup",
-    secret: "vFu7zyEhzYocEv-Xd6ahulvv"
+    secret: Meteor.settings.googleSecret
 });
 
 Meteor.publish("group_users", function (group) {
