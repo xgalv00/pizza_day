@@ -71,7 +71,8 @@
                                     <div class="col-xs-4 col-sm-2"><span class="full-price" ng-if="item.full_price">{{item.full_price}}/</span>
                                         {{item.price}}
                                     </div>
-                                    <div class="col-xs-4 col-sm-3">{{item.total}}</div>
+                                    <div class="col-xs-2 col-sm-3">{{item.total}}</div>
+                                    <div class="col-xs-2 col-sm-2"><span class="glyphicon glyphicon-remove-sign" ng-click="removeDishOrder(item, order)"></span></div>
                                 </div>
                             </li>
                             <li class="list-group-item" ng-if="order.isCreated()">

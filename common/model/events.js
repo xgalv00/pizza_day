@@ -175,6 +175,12 @@ Meteor.methods({
         Dishes.remove(dish._id);
         //TODO add check if dish in order, could not remove dish when ordered
     },
+    removeDishOrder: function(dish_id, order_id){
+        var order = Utils.getOr404(Orders, order_id, "order");
+        var dish = Utils.getOr404(Dishes, dish_id, "dish");
+        Utils.checkIsBelongToUser(order.user);
+        Orders.update(order._id, {$pull: {"items._id": dish._id}});
+    },
     updateDishOrder: function (dish_id, order_id, count) {
         var order = Utils.getOr404(Orders, order_id, "order");
         var dish = Utils.getOr404(Dishes, dish_id, "dish");

@@ -57,12 +57,13 @@ angular.module('pizzaDayApp')
 
             });
 
-            //console.log($(".input-group.date"));
-            //$(".input-group.date").datepicker({
-            //    startDate: new Date(),
-            //    format: 'mm-dd-yyyy'
-            //});
+            $scope.$meteorSubscribe('coupons', group_id).then(function (handle) {
+                $scope.coupons = $meteor.collection(Coupons);
+            });
+
+
             $scope.newEventStatus = "";
+            $scope.newEvent = {};
             $scope.eventStatusChange = function(newEventStatus){
                 $meteor.call('changeEventStatus', $scope.current_event._id, newEventStatus).then(
                     function (result) {
@@ -73,48 +74,22 @@ angular.module('pizzaDayApp')
                     }
                 );
             };
-
-
-            $scope.removeUser = function (user) {
-                $meteor.call('removeUser', user._id, $scope.group._id).then(
-                    function (result) {
-                        console.log("success");
+            $scope.addEvent = function (event) {
+                event.group = $scope.group._id;
+                $meteor.call('addEvent', event).then(function (result) {
+                        $('#addEventModal').modal('hide');
+                        $scope.newEvent = {};
+                        //    TODO noty call add
                     },
                     function (err) {
-                        noty({text: 'Error remove user from group ' + err.message, layout: 'topRight', type: 'error'});
-                    }
-                );
+                        console.log('error add event' + err.message);
+                    });
+            };
+            $scope.removeEvent = function (event) {
+                $scope.events.remove(event);
             };
 
 
-            //$scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
-            //$scope.coupon_dishes = $meteor.collection(Dishes).subscribe('group_coupon_dishes', group_id, "test");
-            $scope.coupons = $meteor.collection(Coupons).subscribe('coupons', group_id);
-            $scope.newDish = {};
-            $scope.addDish = function (newDish) {
-                newDish.group = $scope.group._id;
-                newDish.owner = $rootScope.currentUser._id;
-                $meteor.call('addDish', newDish).then(
-                    function (result) {
-                        $scope.newDish = {};
-                        $('#addDishModal').modal('hide');
-                        //    TODO add noty call
-                    },
-                    function (err) {
-                        console.log('failed', err);
-                    }
-                );
-            };
-
-            $scope.removeDish = function (dish) {
-                $meteor.call('removeDish', dish).then(function (result) {
-                        console.log('success remove');
-                    },
-                    function (err) {
-                        console.log('error remove' + err.message);
-                        //    TODO add noty call
-                    })
-            };
             $scope.confirmOrder = function (order) {
                 $meteor.call('confirmOrder', order._id).then(function (result) {
                         noty({text: 'Order successfully confirmed', layout: 'topRight', type: 'success', timeout: true});
@@ -136,6 +111,14 @@ angular.module('pizzaDayApp')
                         noty({text: 'Error order ' + err.message, layout: 'topRight', type: 'error'});
                     })
             };
+            $scope.removeDishOrder = function (dish, order) {
+                $meteor.call('removeDishOrder', dish._id, order._id).then(function (result) {
+                        console.log('success update dish order');
+                    },
+                    function (err) {
+                        noty({text: 'Error remove dish order ' + err.message, layout: 'topRight', type: 'error'});
+                    })
+            };
             $scope.updateDishOrder = function (dish, order) {
                 $meteor.call('updateDishOrder', dish._id, order._id, dish.count).then(function (result) {
                         console.log('success update dish order');
@@ -144,43 +127,33 @@ angular.module('pizzaDayApp')
                         noty({text: 'Error update dish order ' + err.message, layout: 'topRight', type: 'error'});
                     })
             };
-            $scope.removeCoupon = function (coupon) {
-                $meteor.call('removeCoupon', coupon).then(function (result) {
+
+
+            $scope.newDish = {};
+            $scope.editedDish = {};
+            $scope.addDish = function (newDish) {
+                newDish.group = $scope.group._id;
+                newDish.owner = $rootScope.currentUser._id;
+                $meteor.call('addDish', newDish).then(
+                    function (result) {
+                        $scope.newDish = {};
+                        $('#addDishModal').modal('hide');
+                        //    TODO add noty call
+                    },
+                    function (err) {
+                        console.log('failed', err);
+                    }
+                );
+            };
+            $scope.removeDish = function (dish) {
+                $meteor.call('removeDish', dish).then(function (result) {
                         console.log('success remove');
                     },
                     function (err) {
-                        console.log('error remove coupon' + err.message);
+                        console.log('error remove' + err.message);
                         //    TODO add noty call
-                    });
+                    })
             };
-            $scope.newCoupon = {};
-            $scope.addCoupon = function (coupon) {
-                coupon.group = group_id;
-                $meteor.call('addCoupon', coupon).then(function (result) {
-                        $('#addCouponModal').modal('hide');
-                        $scope.newCoupon = {};
-                        console.log('success add');
-                    },
-                    function (err) {
-                        console.log('error add coupon' + err.message);
-                    });
-            };
-            $scope.newEvent = {};
-            $scope.addEvent = function (event) {
-                event.group = $scope.group._id;
-                $meteor.call('addEvent', event).then(function (result) {
-                        $('#addEventModal').modal('hide');
-                        $scope.newEvent = {};
-                        //    TODO noty call add
-                    },
-                    function (err) {
-                        console.log('error add event' + err.message);
-                    });
-            };
-            $scope.removeEvent = function (event) {
-                $scope.events.remove(event);
-            };
-            $scope.editedDish = {};
             $scope.openEditDish = function (_dish) {
 
                 var modalInstance = $modal.open({
@@ -193,6 +166,41 @@ angular.module('pizzaDayApp')
                     }
                 });
 
+            };
+
+
+            $scope.removeUser = function (user) {
+                $meteor.call('removeUser', user._id, $scope.group._id).then(
+                    function (result) {
+                        console.log("success");
+                    },
+                    function (err) {
+                        noty({text: 'Error remove user from group ' + err.message, layout: 'topRight', type: 'error'});
+                    }
+                );
+            };
+
+
+            $scope.newCoupon = {};
+            $scope.removeCoupon = function (coupon) {
+                $meteor.call('removeCoupon', coupon).then(function (result) {
+                        console.log('success remove');
+                    },
+                    function (err) {
+                        console.log('error remove coupon' + err.message);
+                        //    TODO add noty call
+                    });
+            };
+            $scope.addCoupon = function (coupon) {
+                coupon.group = group_id;
+                $meteor.call('addCoupon', coupon).then(function (result) {
+                        $('#addCouponModal').modal('hide');
+                        $scope.newCoupon = {};
+                        console.log('success add');
+                    },
+                    function (err) {
+                        console.log('error add coupon' + err.message);
+                    });
             };
         }
     ])

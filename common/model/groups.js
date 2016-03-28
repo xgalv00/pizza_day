@@ -70,7 +70,6 @@ Meteor.methods({
         Groups.update(groupId, {$pull: {users: userId}});
     },
     addGroup: function (group) {
-        // TODO add check for group
         if (!this.userId) {
             throw new Meteor.Error(403, "Auth required for this action");
         }
