@@ -37,6 +37,11 @@ Groups.attachSchema(new SimpleSchema({
         type: String,
         label: "Name"
     },
+    image_url: {
+        type: String,
+        optional: true,
+        label: "Image url on file system"
+    },
     image: {
         type: FS.File,
         optional: true,
@@ -66,13 +71,17 @@ Meteor.methods({
     },
     addGroup: function (group) {
         // TODO add check for group
-        if (!this.userId){
+        if (!this.userId) {
             throw new Meteor.Error(403, "Auth required for this action");
         }
-        Groups.insert(group);
+        Groups.insert(group, function (err, _id) {
+            if ("image" in group) {
+                var ngroup = Utils.getOr404(Groups, _id, "group");
+                Groups.update(_id, {$set: {image_url: ngroup.image.url()}})
+            }
+        });
     }
 });
-
 
 
 var nonEmptyString = Match.Where(function (x) {

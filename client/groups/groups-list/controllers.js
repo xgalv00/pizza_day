@@ -1,8 +1,12 @@
 angular.module('pizzaDayApp')
     .controller('GroupListController', ['$scope', '$rootScope', '$meteor', function ($scope, $rootScope, $meteor) {
-        $scope.groups = $meteor.collection(Groups).subscribe('groups');
+        $scope.$meteorSubscribe('groups').then(function (subsHandler) {
+            $scope.groups = $meteor.collection(Groups);
+        });
         $scope.images = $meteor.collectionFS(Images, false, Images).subscribe('images');
-        $scope.$meteorSubscribe('users');
+        $scope.$meteorSubscribe('users').then(function (subsHandler) {
+            $scope.users = $meteor.collection(Meteor.users, false);
+        });
 
         $scope.addImages = function (files) {
             if (files.length > 0) {
@@ -21,12 +25,12 @@ angular.module('pizzaDayApp')
                 $scope.imgSrc = undefined;
             }
         };
-        $scope.isOwner = function(group){
+        $scope.isOwner = function (group) {
             return $rootScope.currentUser._id == group.owner._id;
         };
         $scope.newGroup = {};
         $scope.addGroup = function (newGroup) {
-            if ($scope.myCroppedImage !== undefined && $scope.myCroppedImage !== '' ) {
+            if ($scope.myCroppedImage !== undefined && $scope.myCroppedImage !== '') {
                 $scope.images.save($scope.myCroppedImage).then(function (result) {
                     newGroup.image = result[0]._id;
                     newGroup.owner = $rootScope.currentUser._id;
