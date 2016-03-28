@@ -143,16 +143,20 @@
                     <div id="users" class="panel-collapse collapse" role="tabpanel"
                          aria-labelledby="headingUsers">
                         <ul class="media-list list-group">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-xs-10 col-sm-10">
+                                        <h4>{{group.owner | displayName}}</h4>
+                                    </div>
+                                </div>
+                            </li>
                             <li ng-repeat="user in users" class="list-group-item">
                                 <div class="row">
                                     <div class="col-xs-10 col-sm-10">
                                         <h4>{{user | displayName}}</h4>
                                     </div>
                                     <div class="col-xs-2 col-sm-2">
-                                        <a class="btn btn-danger disabled" title="remove">
-                                            <span class="glyphicon glyphicon-remove visible-xs"></span><span
-                                                class="hidden-xs">Remove</span>
-                                        </a>
+                                        <a class="btn btn-danger" title="remove" ng-click="removeUser(user)">Remove</a>
                                     </div>
                                 </div>
                             </li>

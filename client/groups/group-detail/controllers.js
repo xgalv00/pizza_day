@@ -2,32 +2,17 @@ angular.module('pizzaDayApp')
     .controller('GroupDetailController', ['$scope', '$stateParams', '$meteor', '$rootScope', '$modal',
         function ($scope, $stateParams, $meteor, $rootScope, $modal) {
 
-            var events = $meteor.collection(Events).subscribe('events');
             //TODO add group validation
             var group_id = $stateParams.id;
-            $meteor.subscribe('groups').then(function (subsHandler) {
+
+            $scope.$meteorSubscribe('groups').then(function (subsHandler) {
                 $scope.group = $meteor.object(Groups, group_id);
                 $scope.isOwner = function (group) {
                     if (!group) return false;
                     return $rootScope.currentUser._id == group.owner._id;
                 };
             });
-            //console.log($(".input-group.date"));
-            //$(".input-group.date").datepicker({
-            //    startDate: new Date(),
-            //    format: 'mm-dd-yyyy'
-            //});
-            $scope.newEventStatus = "";
-            $scope.eventStatusChange = function(newEventStatus){
-                $meteor.call('changeEventStatus', $scope.current_event._id, newEventStatus).then(
-                    function (result) {
-                        console.log('status changed successfully')
-                    },
-                    function (err) {
-                        noty({text: 'Event status change error: ' + err.message, type: 'error', layout: 'topRight'});
-                    }
-                );
-            };
+
             $scope.$meteorSubscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
                 $scope.current_event = $meteor.object(Events, {group: group_id, active: true});
@@ -48,7 +33,13 @@ angular.module('pizzaDayApp')
             });
 
 
-            $scope.users = $meteor.collection(Meteor.users, false).subscribe('users');
+            $scope.$meteorSubscribe('users').then(function (subsHandler) {
+                $scope.users = $meteor.collection(function () {
+                    return Meteor.users.find ({_id: {$in:$scope.group.users || []}});
+                }, false);
+
+            });
+
             $scope.$meteorSubscribe('group_dishes', group_id).then(function (handle) {
 
                 $scope.dishes = $meteor.collection(function () {
@@ -65,6 +56,37 @@ angular.module('pizzaDayApp')
                 });
 
             });
+
+            //console.log($(".input-group.date"));
+            //$(".input-group.date").datepicker({
+            //    startDate: new Date(),
+            //    format: 'mm-dd-yyyy'
+            //});
+            $scope.newEventStatus = "";
+            $scope.eventStatusChange = function(newEventStatus){
+                $meteor.call('changeEventStatus', $scope.current_event._id, newEventStatus).then(
+                    function (result) {
+                        console.log('status changed successfully')
+                    },
+                    function (err) {
+                        noty({text: 'Event status change error: ' + err.message, type: 'error', layout: 'topRight'});
+                    }
+                );
+            };
+
+
+            $scope.removeUser = function (user) {
+                $meteor.call('removeUser', user._id, $scope.group._id).then(
+                    function (result) {
+                        console.log("success");
+                    },
+                    function (err) {
+                        noty({text: 'Error remove user from group ' + err.message, layout: 'topRight', type: 'error'});
+                    }
+                );
+            };
+
+
             //$scope.dishes = $meteor.collection(Dishes).subscribe('group_dishes', group_id);
             //$scope.coupon_dishes = $meteor.collection(Dishes).subscribe('group_coupon_dishes', group_id, "test");
             $scope.coupons = $meteor.collection(Coupons).subscribe('coupons', group_id);

@@ -51,19 +51,24 @@ Groups.attachSchema(new SimpleSchema({
 
 Meteor.methods({
     addUser: function (userId, groupId) {
-        check(userId, nonEmptyString);
-        check(groupId, nonEmptyString);
-        var user = Meteor.users.findOne(userId);
-        var group = Groups.findOne(groupId);
-        if (!user)
-            throw new Meteor.Error(404, "No such user");
-        if (!group)
-            throw new Meteor.Error(404, "No such group");
+        let user = Utils.getOr404(Meteor.users, userId, "user");
+        let group = Utils.getOr404(Groups, userId, "group");
+        Utils.checkIsOwner(group);
         Meteor.users.update(userId, {$addToSet: {groups: groupId}});
         Groups.update(groupId, {$addToSet: {users: userId}});
     },
+    removeUser: function (userId, groupId) {
+        let user = Utils.getOr404(Meteor.users, userId, "user");
+        let group = Utils.getOr404(Groups, userId, "group");
+        Utils.checkIsOwner(group);
+        Meteor.users.update(userId, {$pull: {groups: groupId}});
+        Groups.update(groupId, {$pull: {users: userId}});
+    },
     addGroup: function (group) {
         // TODO add check for group
+        if (!this.userId){
+            throw new Meteor.Error(403, "Auth required for this action");
+        }
         Groups.insert(group);
     }
 });
