@@ -26,34 +26,43 @@
 
 
                 <div class="at-pwd-form">
-                    <form role="form" novalidate="" action="#" method="POST">
+                    <form name="registerForm" role="form" ng-submit="rc.register()" novalidate>
                         <fieldset>
 
 
-                            <div class="at-input form-group has-feedback">
+                            <div
+                                    ng-class="{ 'has-error' : (registerForm.email.$error.required || registerForm.email.$error.email) && !registerForm.email.$pristine }"
+                                    class="at-input form-group has-feedback">
                                 <label class="control-label" for="signup-email">
                                     Email
                                 </label>
                                 <input id="signup-email" ng-model="rc.credentials.email"
                                        type="email" class="form-control" name="email"
-                                       placeholder="Email" autocapitalize="none" autocorrect="off">
+                                       placeholder="Email" autocapitalize="none" autocorrect="off" required>
 
-                                <span class="help-block hide"></span>
+                                <span ng-show="registerForm.email.$error.required && !registerForm.email.$pristine"
+                                      class="help-block">Email is required.</span>
+
+                                <span ng-show="registerForm.email.$error.email && !registerForm.email.$pristine"
+                                      class="help-block">Provide correct email</span>
                             </div>
 
 
-                            <div class="at-input form-group has-feedback">
+                            <div
+                                    ng-class="{ 'has-error' : registerForm.password.$error.required && !registerForm.password.$pristine }"
+                                    class="at-input form-group has-feedback">
                                 <label class="control-label" for="signup-password">
                                     Password
                                 </label>
                                 <input id="signup-password" type="password" ng-model="rc.credentials.password"
                                        class="form-control" name="password"
-                                       placeholder="Password" autocapitalize="none" autocorrect="off">
+                                       placeholder="Password" autocapitalize="none" autocorrect="off" required>
 
-                                <span class="help-block hide">Test</span>
+                                <span ng-show="registerForm.password.$error.required && !registerForm.password.$pristine"
+                                      class="help-block">Password is required.</span>
                             </div>
 
-                            <button ng-click="rc.register()" type="submit"
+                            <button type="submit" ng-disabled="registerForm.$invalid"
                                     class="at-btn submit btn btn-lg btn-block btn-default">
                                 Create account
                             </button>

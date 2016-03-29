@@ -26,29 +26,38 @@
 
 
                 <div class="at-pwd-form">
-                    <form role="form" novalidate="">
+                    <form name="loginForm" ng-submit="lc.login()" role="form" novalidate>
                         <fieldset>
-
-
-                            <div class="at-input form-group has-feedback">
+                            <div 
+                                    ng-class="{ 'has-error' : (loginForm.email.$error.required || loginForm.email.$error.email) && !loginForm.email.$pristine }"
+                                    class="at-input form-group has-feedback">
                                 <label class="control-label" for="login-email">
                                     Email
                                 </label>
-                                <input id="login-email" type="email" ng-model="lc.credentials.email" class="form-control" name="email"
-                                       placeholder="Email" autocapitalize="none" autocorrect="off">
+                                <input id="login-email" type="email" ng-model="lc.credentials.email"
+                                       class="form-control" name="email"
+                                       placeholder="Email" autocapitalize="none" autocorrect="off" required>
 
-                                <span class="help-block hide"></span>
+                                <span ng-show="loginForm.email.$error.required && !loginForm.email.$pristine"
+                          class="help-block">Email is required.</span>
+
+                                <span ng-show="loginForm.email.$error.email && !loginForm.email.$pristine"
+                          class="help-block">Provide correct email</span>
                             </div>
 
 
-                            <div class="at-input form-group has-feedback">
+                            <div 
+                                    ng-class="{ 'has-error' : loginForm.password.$error.required && !loginForm.password.$pristine }"
+                                    class="at-input form-group has-feedback">
                                 <label class="control-label" for="login-password">
                                     Password
                                 </label>
-                                <input id="login-password" type="password" ng-model="lc.credentials.password" class="form-control" name="password"
-                                       placeholder="Password" autocapitalize="none" autocorrect="off">
+                                <input id="login-password" type="password" ng-model="lc.credentials.password"
+                                       class="form-control" name="password"
+                                       placeholder="Password" autocapitalize="none" autocorrect="off" required>
 
-                                <span class="help-block hide"></span>
+                                <span ng-show="loginForm.password.$error.required && !loginForm.password.$pristine"
+                          class="help-block">Password is required.</span>
                             </div>
 
 
@@ -61,7 +70,8 @@
                                 </p>
                             </div>
 
-                            <button type="submit" ng-click="lc.login()" class="at-btn submit btn btn-lg btn-block btn-default">
+                            <button type="submit" ng-disabled="loginForm.$invalid"
+                                    class="at-btn submit btn btn-lg btn-block btn-default">
                                 Sign In
                             </button>
                         </fieldset>

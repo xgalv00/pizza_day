@@ -165,7 +165,7 @@ Meteor.methods({
         }
     },
     editDish: function (dish) {
-        var dbDish = Utils.getOr404(Dishes, dish, "dish");
+        var dbDish = Utils.getOr404(Dishes, dish._id, "dish");
         var group = Utils.getOr404(Groups, dbDish.group, "group");
         Utils.checkIsInGroup(group);
         //TODO add check if dish in order, could not remove dish when ordered

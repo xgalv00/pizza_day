@@ -5,17 +5,21 @@
         <h4 class="modal-title">Add User To Group</h4>
     </div>
     <div class="modal-body">
-        <form ng-submit="addUserToGroup(user._id, groupId)">
-            <div class="form-group">
-                <label for="add-group-select" class="control-label">Select group to add:</label>
-                <select name="group-select" class="form-control" id="add-group-select" ng-model="groupId">
+        <form name="addUserToGroupForm" ng-submit="addUserToGroup(user._id, groupId)" novalidate>
+            <div
+                    ng-class="{ 'has-error' : addUserToGroupForm.addGroupSelect.$error.required && !addUserToGroupForm.addGroupSelect.$pristine }"
+                    class="form-group">
+                <label for="addGroupSelect" class="control-label">Select group to add:</label>
+                <select id="addGroupSelect" class="form-control" name="addGroupSelect" ng-model="groupId" required>
                     <option value="{{group._id}}" ng-repeat="group in owner_groups">{{ group.name }}</option>
                 </select>
+                <span ng-show="addUserToGroupForm.addGroupSelect.$error.required && !addUserToGroupForm.addGroupSelect.$pristine"
+                                  class="help-block">You should choose a group.</span>
             </div>
             <div class="form-group">
                 <button type="button" class="btn btn-default" ng-click="cancel()"   >Close
                 </button>
-                <input type="submit" class="btn btn-primary" value="Add to group">
+                <input type="submit" class="btn btn-primary" ng-disabled="addUserToGroupForm.$invalid" value="Add to group">
             </div>
         </form>
     </div>

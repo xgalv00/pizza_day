@@ -70,7 +70,9 @@
                                     <div class="col-xs-4 col-sm-4">{{item.name}}</div>
                                     <div class="col-xs-2 col-sm-1">
                                         <div ng-if="order.isConfirmed()">{{item.count}}</div>
-                                        <input class="form-control" ng-if="order.isCreated()" ng-model="item.count"
+                                        <input class="form-control" type="number"
+                                               ng-model-options="{ updateOn: 'blur' }" ng-if="order.isCreated()"
+                                               ng-model="item.count"
                                                ng-change="updateDishOrder(item, order)" title="Count to order">
                                     </div>
                                     <div class="col-xs-4 col-sm-2"><span class="full-price" ng-if="item.full_price">{{item.full_price}}/</span>
@@ -238,19 +240,34 @@
                     <h4 class="modal-title">New Dish</h4>
                 </div>
                 <div class="modal-body">
-                    <form ng-submit="addDish(newDish)">
-                        <div class="form-group">
-                            <label for="add-dish-name" class="control-label">Dish name:</label>
-                            <input type="text" class="form-control" id="add-dish-name" ng-model="newDish.name">
+                    <form name="addDishForm" ng-submit="addDish(newDish)" novalidate>
+                        <div
+                                ng-class="{ 'has-error' : addDishForm.addDishName.$error.required && !addDishForm.addDishName.$pristine }"
+                                class="form-group">
+                            <label for="addDishName" class="control-label">Dish name:</label>
+                            <input type="text" class="form-control" name="addDishName" id="addDishName"
+                                   ng-model="newDish.name" required>
+                            <span ng-show="addDishForm.addDishName.$error.required && !addDishForm.addDishName.$pristine"
+                                  class="help-block">Dish name is required.</span>
                         </div>
-                        <div class="form-group">
-                            <label for="add-dish-price" class="control-label">Dish price:</label>
-                            <input type="text" class="form-control" id="add-dish-price" ng-model="newDish.price">
+                        <div
+                                ng-class="{ 'has-error' : (addDishForm.addDishPrice.$error.required || addDishForm.addDishPrice.$error.number || addDishForm.addDishPrice.$error.min) && !addDishForm.addDishPrice.$pristine }"
+                                class="form-group">
+                            <label for="addDishPrice" class="control-label">Dish price:</label>
+                            <input type="number" class="form-control" name="addDishPrice" id="addDishPrice"
+                                   ng-model="newDish.price" min="0.01" required>
+                            <span ng-show="addDishForm.addDishPrice.$error.required && !addDishForm.addDishPrice.$pristine"
+                                  class="help-block">Dish price is required.</span>
+                            <span ng-show="addDishForm.addDishPrice.$error.number && !addDishForm.addDishPrice.$pristine"
+                                  class="help-block">Dish price should be a number.</span>
+                            <span ng-show="addDishForm.addDishPrice.$error.min && !addDishForm.addDishPrice.$pristine"
+                                  class="help-block">Dish price should be greater than 0.01</span>
                         </div>
                         <div class="form-group">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close
                             </button>
-                            <input type="submit" class="btn btn-primary" value="Add Dish">
+                            <input type="submit" class="btn btn-primary" ng-disabled="addDishForm.$invalid"
+                                   value="Add Dish">
                         </div>
                     </form>
                 </div>
@@ -268,17 +285,21 @@
                     <h4 class="modal-title">New Event</h4>
                 </div>
                 <div class="modal-body">
-                    <form ng-submit="addEvent(newEvent)">
+                    <form name="addEventForm" ng-submit="addEvent(newEvent)" novalidate>
                         <div class="form-group">
                             <div class="row">
-                                <div class="col-xs-12 col-sm-4"><label for="create-event-date" class="control-label">Event
+                                <div class="col-xs-12 col-sm-4"><label for="addEventDate" class="control-label">Event
                                     date:</label></div>
                                 <div class="col-xs-12 col-sm-8">
-                                    <div class="input-group date" data-provide="datepicker"
-                                         data-date-format="mm-dd-yyyy"
-                                         data-date-start-date="{{current_event.date | date:'MM-dd-yyyy'}}">
-                                        <input type="text" disabled="disabled" id="create-event-date"
-                                               class="form-control" ng-model="newEvent.date">
+                                    <div
+                                            ng-class="{ 'has-error' : addEventForm.addEventDate.$error.required && !addEventForm.addEventDate.$pristine }"
+                                            class="input-group date" data-provide="datepicker"
+                                            data-date-format="mm-dd-yyyy"
+                                            data-date-start-date="{{current_event.date | date:'MM-dd-yyyy'}}">
+                                        <input type="text" disabled="disabled" name="addEventDate" id="addEventDate"
+                                               class="form-control" ng-model="newEvent.date" required>
+                                        <span ng-show="addEventForm.addEventDate.$error.required && !addEventForm.addEventDate.$pristine"
+                                              class="help-block">Event date is required.</span>
 
                                         <div class="input-group-addon">
                                             <span class="glyphicon glyphicon-th"></span>
@@ -291,7 +312,8 @@
                         <div class="form-group">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close
                             </button>
-                            <input type="submit" class="btn btn-primary" value="Create Event">
+                            <input type="submit" class="btn btn-primary" ng-disabled="addEventForm.$invalid"
+                                   value="Create Event">
                         </div>
                     </form>
                 </div>
@@ -309,25 +331,38 @@
                     <h4 class="modal-title" id="exampleModalLabel">New Coupon</h4>
                 </div>
                 <div class="modal-body">
-                    <form ng-submit="addCoupon(newCoupon)">
-                        <div class="form-group">
-                            <label for="add-coupon-select" class="control-label">Select dish to add:</label>
-                            <select class="form-control" name="group-select" id="add-coupon-select"
-                                    ng-model="newCoupon.dish">
+                    <form name="addCouponForm" ng-submit="addCoupon(newCoupon)" novalidate>
+                        <div
+                                ng-class="{ 'has-error' : addCouponForm.addCouponSelect.$error.required && !addCouponForm.addCouponSelect.$pristine }"
+                                class="form-group">
+                            <label for="addCouponSelect" class="control-label">Select dish to add:</label>
+                            <select class="form-control" name="addCouponSelect" id="addCouponSelect"
+                                    ng-model="newCoupon.dish" required>
                                 <option value="{{ cdish._id }}" ng-repeat="cdish in coupon_dishes">{{ cdish.name }}
                                 </option>
                             </select>
+                            <span ng-show="addCouponForm.addCouponSelect.$error.required && !addCouponForm.addCouponSelect.$pristine"
+                                  class="help-block">Dish for coupon is required.</span>
                         </div>
-                        <div class="form-group">
-                            <label for="coupon-discount" class="control-label">Coupon
+                        <div
+                                ng-class="{ 'has-error' : (addCouponForm.addCouponDiscount.$error.required || addCouponForm.addCouponDiscount.$error.min || addCouponForm.addCouponDiscount.$error.max || addCouponForm.addCouponDiscount.$error.integer) && !addCouponForm.addCouponDiscount.$pristine }"
+                                class="form-group">
+                            <label for="addCouponDiscount" class="control-label">Coupon
                                 discount (percent):</label>
-                            <input type="text" class="form-control" id="coupon-discount"
-                                   ng-model="newCoupon.discount">
+                            <input type="number" name="addCouponDiscount" class="form-control" id="addCouponDiscount"
+                                   ng-model="newCoupon.discount" min="0" max="100" integer required>
+                            <span ng-show="addCouponForm.addCouponDiscount.$error.required && !addCouponForm.addCouponDiscount.$pristine"
+                                  class="help-block">Coupon discount is required.</span>
+                            <span ng-show="addCouponForm.addCouponDiscount.$error.integer && !addCouponForm.addCouponDiscount.$pristine"
+                                  class="help-block">Coupon discount should be a integer.</span>
+                            <span ng-show="(addCouponForm.addCouponDiscount.$error.min || addCouponForm.addCouponDiscount.$error.max) && !addCouponForm.addCouponDiscount.$pristine"
+                                  class="help-block">Coupon discount should be in range from 0 to 100.</span>
                         </div>
                         <div class="form-group">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close
                             </button>
-                            <input type="submit" class="btn btn-primary" value="Add coupon">
+                            <input type="submit" class="btn btn-primary" ng-disabled="addCouponForm.$invalid"
+                                   value="Add coupon">
                         </div>
                     </form>
                 </div>

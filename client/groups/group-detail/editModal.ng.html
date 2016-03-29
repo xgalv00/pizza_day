@@ -5,21 +5,35 @@
         <h4 class="modal-title">Edit Dish</h4>
     </div>
     <div class="modal-body">
-        <form ng-submit="editDish(dish._id, editedDish)">
-            <div class="form-group">
-                <label for="edit-group-name" class="control-label">Dish name:</label>
-                <input type="text" class="form-control" id="edit-group-name" ng-model="editedDish.name" ng-init="editedDish.name=dish.name">
+        <form name="editDishForm" ng-submit="editDish(dish._id, editedDish)" novalidate>
+            <div
+                    ng-class="{ 'has-error' : editDishForm.editDishName.$error.required && !editDishForm.editDishName.$pristine }"
+                    class="form-group">
+                <label for="editGroupName" class="control-label">Dish name:</label>
+                <input type="text" class="form-control" name="editDishName" id="editGroupName" ng-model="editedDish.name"
+                       ng-init="editedDish.name=dish.name" required>
+                <span ng-show="editDishForm.editDishName.$error.required && !editDishForm.editDishName.$pristine"
+                          class="help-block">Dish name is required.</span>
             </div>
-            <div class="form-group">
-                <label for="edit-dish-price" class="control-label">Dish price:</label>
-                <input type="text" class="form-control" id="edit-dish-price" ng-model="editedDish.price" ng-init="editedDish.price=dish.price">
+            <div
+                    ng-class="{ 'has-error' : (editDishForm.editDishPrice.$error.required || editDishForm.editDishPrice.$error.number || editDishForm.editDishPrice.$error.min) && !editDishForm.editDishPrice.$pristine }"
+                    class="form-group">
+                <label for="editDishPrice" class="control-label">Dish price:</label>
+                <input type="number" class="form-control" name="editDishPrice" id="editDishPrice" ng-model="editedDish.price"
+                       ng-init="editedDish.price=dish.price" min="0.01" required>
+                <span ng-show="editDishForm.editDishPrice.$error.required && !editDishForm.editDishPrice.$pristine"
+                          class="help-block">Dish price is required.</span>
+                <span ng-show="editDishForm.editDishPrice.$error.number && !editDishForm.editDishPrice.$pristine"
+                          class="help-block">Dish price should be a number.</span>
+                <span ng-show="editDishForm.editDishPrice.$error.min && !editDishForm.editDishPrice.$pristine"
+                          class="help-block">Dish price should be greater than 0.01</span>
             </div>
             <div class="form-group">
             </div>
             <div class="form-group">
                 <button type="button" class="btn btn-default" ng-click="cancel()">Close
                 </button>
-                <input type="submit" class="btn btn-primary" value="Edit dish">
+                <input type="submit" class="btn btn-primary" ng-disabled="editDishForm.$invalid" value="Edit dish">
             </div>
         </form>
     </div>
