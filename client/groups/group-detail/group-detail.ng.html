@@ -19,22 +19,27 @@
                                         Next event
                                     </h4></div>
                                 <div class="col-xs-4">{{current_event.date | date}}</div>
-                                <div class="col-xs-4" ng-if="current_event.status !== 'ordered' && current_event.status !== 'delivering' || !isOwner(group)">{{current_event.status}}</div>
+                                <div class="col-xs-4"
+                                     ng-if="current_event.status !== 'ordered' && current_event.status !== 'delivering' || !isOwner(group)">
+                                    {{current_event.status}}
+                                </div>
                                 <div class="col-xs-4" ng-if="current_event.status === 'ordered' && isOwner(group)">
-                                    <select name="" class="form-control" ng-init="newEventStatus='ordered'" ng-model="newEventStatus" ng-change="eventStatusChange(newEventStatus)">
+                                    <select name="" class="form-control" ng-init="newEventStatus='ordered'"
+                                            ng-model="newEventStatus" ng-change="eventStatusChange(newEventStatus)">
                                         <option value="ordered">Ordered</option>
                                         <option value="delivering">Delivering</option>
                                     </select>
                                 </div>
                                 <div class="col-xs-4" ng-if="current_event.status === 'delivering' && isOwner(group)">
-                                    <select name="" class="form-control" ng-init="newEventStatus='delivering'" ng-model="newEventStatus" ng-change="eventStatusChange(newEventStatus)">
+                                    <select name="" class="form-control" ng-init="newEventStatus='delivering'"
+                                            ng-model="newEventStatus" ng-change="eventStatusChange(newEventStatus)">
                                         <option value="delivering">Delivering</option>
                                         <option value="delivered">Delivered</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-xs-2">
-                                <button ng-if="isOwner(group)"  class="btn btn-primary" type="button" data-toggle="modal"
+                                <button ng-if="isOwner(group)" class="btn btn-primary" type="button" data-toggle="modal"
                                         data-target="#addEventModal">Create Event
                                 </button>
                             </div>
@@ -72,7 +77,9 @@
                                         {{item.price}}
                                     </div>
                                     <div class="col-xs-2 col-sm-3">{{item.total}}</div>
-                                    <div class="col-xs-2 col-sm-2" ng-if="order.isCreated()"><span class="glyphicon glyphicon-remove-sign text-danger" ng-click="removeDishOrder(item, order)"></span></div>
+                                    <div class="col-xs-2 col-sm-2" ng-if="order.isCreated()"><span
+                                            class="glyphicon glyphicon-remove-sign text-danger"
+                                            ng-click="removeDishOrder(item, order)"></span></div>
                                 </div>
                             </li>
                             <li class="list-group-item" ng-if="order.isCreated()">
@@ -89,22 +96,34 @@
                 <div class="panel panel-default menu-panel">
                     <div class="panel-heading" id="headingMenu">
                         <div class="row">
-                            <div class="col-xs-11 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
+                            <div class="col-xs-9 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
                                  data-target="#menu" aria-expanded="false" aria-controls="collapseMenu">
                                 <h4 class="panel-title">
                                     Menu
                                 </h4>
                             </div>
-                            <div class="col-xs-1">
-                                <button class="btn btn-primary" type="button" data-toggle="modal"
-                                        data-target="#addDishModal">Add Dish
-                                </button>
+                            <div class="col-xs-3">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <select class="form-control" ng-model="dishOrd">
+                                            <option value="name">Name</option>
+                                            <option value="price">Price</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-6">
+                                        <button class="btn btn-primary" type="button" data-toggle="modal"
+                                                data-target="#addDishModal">Add Dish
+                                        </button>
+                                    </div>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
                     <div id="menu" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingMenu">
                         <ul class="media-list list-group">
-                            <li ng-repeat="dish in dishes" class="list-group-item">
+                            <li ng-repeat="dish in dishes | orderBy : dishOrd" class="list-group-item">
                                 <div class="row">
                                     <div class="col-xs-8 col-sm-6">
                                         <h4>
@@ -114,7 +133,8 @@
 
                                     <div class="col-xs-6 col-sm-3">
                                         <div class="pull-right">
-                                            <button class="btn btn-primary" ng-if="current_event._id && !order.isConfirmed()"
+                                            <button class="btn btn-primary"
+                                                    ng-if="current_event._id && !order.isConfirmed()"
                                                     ng-click="orderDish(dish)">Order
                                             </button>
                                             <a class="btn btn-info" ng-click="openEditDish(dish)">
@@ -168,14 +188,16 @@
                 <div ng-if="isOwner(group)" class="panel panel-default coupons-panel">
                     <div class="panel-heading" role="tab" id="headingCoupons">
                         <div class="row">
-                            <div class="col-xs-11" ng-class="{true:'cursor-pointer', false:''}[coupons.length > 0]" data-toggle="collapse" data-parent="#accordion"
+                            <div class="col-xs-11" ng-class="{true:'cursor-pointer', false:''}[coupons.length > 0]"
+                                 data-toggle="collapse" data-parent="#accordion"
                                  data-target="#coupons" aria-expanded="false" aria-controls="collapseCoupons">
                                 <h4 class="panel-title">
                                     Coupons
                                 </h4>
                             </div>
                             <div class="col-xs-1">
-                                <button ng-show="coupon_dishes.length > 0" class="btn btn-primary" type="button" data-toggle="modal"
+                                <button ng-show="coupon_dishes.length > 0" class="btn btn-primary" type="button"
+                                        data-toggle="modal"
                                         data-target="#addCouponModal">Add
                                 </button>
                             </div>
@@ -252,7 +274,9 @@
                                 <div class="col-xs-12 col-sm-4"><label for="create-event-date" class="control-label">Event
                                     date:</label></div>
                                 <div class="col-xs-12 col-sm-8">
-                                    <div class="input-group date" data-provide="datepicker" data-date-format="mm-dd-yyyy" data-date-start-date="{{current_event.date | date:'MM-dd-yyyy'}}">
+                                    <div class="input-group date" data-provide="datepicker"
+                                         data-date-format="mm-dd-yyyy"
+                                         data-date-start-date="{{current_event.date | date:'MM-dd-yyyy'}}">
                                         <input type="text" disabled="disabled" id="create-event-date"
                                                class="form-control" ng-model="newEvent.date">
 
