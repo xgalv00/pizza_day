@@ -153,14 +153,14 @@ Meteor.methods({
         var event = Utils.getOr404(Events, event_id, "event");
         var group = Utils.getOr404(Groups, event.group, "group");
         Utils.checkIsOwner(group);
-        if (newStatus == "delivered"){
+        if (newStatus == "delivered") {
             Events.update(event_id, {$set: {status: newStatus, active: false}});
             //TODO send message about delivery
             var nevent = Events.findOne({date: {$gt: event.date}});
-            if (nevent){
+            if (nevent) {
                 Events.update(nevent._id, {$set: {active: true}});
             }
-        }else{
+        } else {
             Events.update(event_id, {$set: {status: newStatus}});
         }
     },
@@ -182,7 +182,7 @@ Meteor.methods({
         Dishes.remove(dish._id);
         //TODO add check if dish in order, could not remove dish when ordered
     },
-    removeDishOrder: function(dish_id, order_id){
+    removeDishOrder: function (dish_id, order_id) {
         var order = Utils.getOr404(Orders, order_id, "order");
         var dish = Utils.getOr404(Dishes, dish_id, "dish");
         Utils.checkIsBelongToUser(order.user);
@@ -239,25 +239,48 @@ Meteor.methods({
         Orders.update(order._id, {$set: {status: "confirmed"}});
         var users = group.users || [];
         users.push(group.owner._id);
-        var orders_count = Orders.find({event: event._id, status: "confirmed", user: {$in: users}}).count();
+        var orders = Orders.find({event: event._id, status: "confirmed", user: {$in: users}});
+        var ordersCount = orders.count();
         //!_.contains(party.invited, userId)
-        if (users.length == orders_count) {
-            var from = Utils.contactEmail(Meteor.users.findOne(this.userId));
-            //TODO update to field
-            var to = 'galkin.vitaly@gmail.com';
+        if (users.length == ordersCount) {
+            //var group_owner_email = Utils.contactEmail(group.owner);
+            var from = Utils.contactEmail(group.owner);
+            var ordersArr = orders.map(function (doc) {
+                return doc;
+            });
+            users.forEach(function (el, ind, arr) {
+                var to = Utils.contactEmail(Meteor.users.findOne(el));
+
+                if (Meteor.isServer && to) {
+                    var uorderInd = ordersArr.findIndex(function (obj) {
+                        return obj.user == el;
+                    });
+                    var uorder = ordersArr.splice(uorderInd, 1)[0];
+                    var context = {order: uorder, url: Meteor.absoluteUrl('groups/' + group._id)};
+                    var emailTemplate;
+                    if (el == group.owner._id) {
+                        var itemsToOrder = Orders.aggregate([
+                            {$match: {event: event._id, status: "confirmed", user: {$in: users}}},
+                            {$project: {items: 1, _id: 0}},
+                            {$unwind: "$items"},
+                            {$group: {_id: "$items._id", count: {$sum: "$items.count"}}}
+                        ]);
+                        context.eventSummary = {itemsToOrder: itemsToOrder};
+                        emailTemplate = Handlebars.templates['owner_email'](context);
+                    } else {
+                        emailTemplate = Handlebars.templates['user_email'](context);
+                    }
+
+                    Email.send({
+                        from: "noreply@pizzaday.com",
+                        to: to,
+                        replyTo: from || undefined,
+                        subject: "Order for event: " + event.date,
+                        html: emailTemplate
+                    });
+                }
+            });
             Events.update({_id: event._id}, {$set: {status: "ordered"}});
-            if (Meteor.isServer && to) {
-                // This code only runs on the server. If you didn't want clients
-                // to be able to see it, you could move it to a separate file.
-                Email.send({
-                    from: "noreply@socially.com",
-                    to: to,
-                    replyTo: from || undefined,
-                    subject: "Order: " + order._id,
-                    text: "Hey, I just invited you to '" + order._id + "' on Socially." +
-                    "\n\nCome check it out: " + Meteor.absoluteUrl() + "\n"
-                });
-            }
         }
     }
 });

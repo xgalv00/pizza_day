@@ -1,0 +1,24 @@
+<div>
+    <h4>Hey, I've just confirmed your order {{ order._id }} </h4>
+    <h4>Dishes</h4>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>Count</td>
+            <td>Price</td>
+            <td>Total</td>
+        </tr>
+        {{#each order.items}}
+            <tr>
+                <td>{{name}}</td>
+                <td>{{count}}</td>
+                <td>{{price}}</td>
+                <td>{{total}}</td>
+            </tr>
+        {{/each}}
+        <tr>
+            <td>Total</td>
+            <td>{{order.total}}</td>
+        </tr>
+    </table>
+</div>
