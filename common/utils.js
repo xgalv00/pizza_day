@@ -1,11 +1,14 @@
 Utils = {
     checkIsOwner: (group) => {
         var userId = Meteor.userId();
-        if (!(userId && userId == group.owner))
+        if (!(userId && userId == group.owner._id))
             throw new Meteor.Error(403, "User is not owner");
     },
     checkIsInGroup: (group) => {
         var userId = Meteor.userId();
+        if (userId == group.owner._id){
+            return;
+        }
         if (!(userId && _.contains(group.users, userId)))
             throw new Meteor.Error(403, "User is not in group");
     },

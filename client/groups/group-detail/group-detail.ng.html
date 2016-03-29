@@ -72,7 +72,7 @@
                                         {{item.price}}
                                     </div>
                                     <div class="col-xs-2 col-sm-3">{{item.total}}</div>
-                                    <div class="col-xs-2 col-sm-2"><span class="glyphicon glyphicon-remove-sign" ng-click="removeDishOrder(item, order)"></span></div>
+                                    <div class="col-xs-2 col-sm-2" ng-if="order.isCreated()"><span class="glyphicon glyphicon-remove-sign text-danger" ng-click="removeDishOrder(item, order)"></span></div>
                                 </div>
                             </li>
                             <li class="list-group-item" ng-if="order.isCreated()">
@@ -252,7 +252,7 @@
                                 <div class="col-xs-12 col-sm-4"><label for="create-event-date" class="control-label">Event
                                     date:</label></div>
                                 <div class="col-xs-12 col-sm-8">
-                                    <div class="input-group date" data-provide="datepicker" data-date-format="mm-dd-yyyy" data-date-start-date="{{current_event.date}}">
+                                    <div class="input-group date" data-provide="datepicker" data-date-format="mm-dd-yyyy" data-date-start-date="{{current_event.date | date:'MM-dd-yyyy'}}">
                                         <input type="text" disabled="disabled" id="create-event-date"
                                                class="form-control" ng-model="newEvent.date">
 

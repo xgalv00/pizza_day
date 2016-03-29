@@ -140,7 +140,7 @@ Meteor.methods({
         Coupons.remove(coupon._id);
     },
     addEvent: function (event) {
-        var group = Utils.getOr404(Groups, coupon.group, "group");
+        var group = Utils.getOr404(Groups, event.group, "group");
         Utils.checkIsOwner(group);
         var current_event = Events.findOne({group: event.group, active: true});
         var ndate = Utils.stringToDate(event.date, "mm-dd-yyyy", "-");
@@ -150,12 +150,19 @@ Meteor.methods({
         Events.insert(event);
     },
     changeEventStatus: function (event_id, newStatus) {
-        //TODO check for status
-        //TODO change active event after delivered status
         var event = Utils.getOr404(Events, event_id, "event");
         var group = Utils.getOr404(Groups, event.group, "group");
         Utils.checkIsOwner(group);
-        Events.update(event_id, {$set: {status: newStatus}});
+        if (newStatus == "delivered"){
+            Events.update(event_id, {$set: {status: newStatus, active: false}});
+            //TODO send message about delivery
+            var nevent = Events.findOne({date: {$gt: event.date}});
+            if (nevent){
+                Events.update(nevent._id, {$set: {active: true}});
+            }
+        }else{
+            Events.update(event_id, {$set: {status: newStatus}});
+        }
     },
     editDish: function (dish) {
         var dbDish = Utils.getOr404(Dishes, dish, "dish");

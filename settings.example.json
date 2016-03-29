@@ -2,5 +2,9 @@
   "sendGridUserName": "",
   "sendGridPassword": "",
   "googleClientId": "",
-  "googleSecret": ""
+  "googleSecret": "",
+  "public": {
+    "STAGING": true,
+    "LOCAL": false
+  }
 }
