@@ -11,17 +11,17 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse ">
             <ul class="nav navbar-nav navbar-left">
-                <li class="active"><a ui-sref="app">
+                <li ng-class="getClass('/')"><a ui-sref="app">
                         <span class="glyphicon glyphicon-home"
                               aria-hidden="true"></span> Home</a></li>
-                <li><a ui-sref="app.groups">
+                <li ng-class="getClass('/groups')"><a ui-sref="app.groups">
                         <span class="glyphicon glyphicon-info-sign"
                               aria-hidden="true"></span> Groups</a></li>
-                <li><a ui-sref="app.users">
+                <li ng-class="getClass('/users')"><a ui-sref="app.users">
                          <span class="glyphicon glyphicon-list-alt"
                                aria-hidden="true"></span>
                     Users</a></li>
-                <li><a ui-sref="app.contactus">
+                <li ng-class="getClass('/contactus')"><a ui-sref="app.contactus">
                     <i class="fa fa-envelope-o"></i> Contact</a></li>
             </ul>
             <div class="navbar-right">

@@ -9,6 +9,7 @@ angular.module('pizzaDayApp')
                 views: {
                     'header': {
                         templateUrl: 'client/views/header.ng.html',
+                        controller: 'HeaderController'
                     },
                     'content': {
                         templateUrl: 'client/views/home.ng.html',
@@ -37,8 +38,7 @@ angular.module('pizzaDayApp')
                 url: 'contactus',
                 views: {
                     'content@': {
-                        templateUrl: 'client/views/contactus.ng.html',
-                        controller: 'ContactController'
+                        templateUrl: 'client/views/contactus.ng.html'
                     }
                 }
             })
