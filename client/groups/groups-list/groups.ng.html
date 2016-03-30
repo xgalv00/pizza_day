@@ -18,10 +18,10 @@
                                 <a class="remove-link-decoration" ui-sref="app.groupdetail({id: group._id})">
                                     <div class="media">
                                         <div class="media-left media-middle"
-                                             ng-if="group.image_url || group.image.url()">
+                                             ng-if="group.image_url">
 
                                             <img class="media-object img-thumbnail"
-                                                 ng-src="{{group.image_url || group.image.url()}}" alt="{{group.name}}">
+                                                 ng-src="{{group.image_url}}" alt="{{group.name}}">
 
                                         </div>
                                         <div class="media-body">
@@ -82,7 +82,7 @@
                                     <div ng-show="dropAvailable">You can also drop image to here</div>
                                 </div>
                                 <div ng-show="imgSrc" class="ng-crop-container">
-                                    <img-crop image="imgSrc" result-image="myCroppedImage"
+                                    <img-crop image="imgSrc" result-image="myCroppedImage" result-image-size="100"
                                               area-type="square"></img-crop>
                                 </div>
                             </div>

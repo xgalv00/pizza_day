@@ -11,26 +11,28 @@ angular.module('pizzaDayApp')
                     return $rootScope.currentUser._id == group.owner._id;
                 };
             });
-
-            function set_order() {
-                $scope.order = $meteor.object(Orders, {
-                    event: $scope.current_event._id,
-                    user: $rootScope.currentUser._id
-                });
-                $scope.order.isConfirmed = function () {
-                    return this.status === "confirmed";
-                };
-                $scope.order.isCreated = function () {
-                    return this.status === "created";
-                };
-            }
+            $scope.orderIsConfirmed = function (order) {
+                return order && order.status === "confirmed";
+            };
+            $scope.orderIsCreated = function (order) {
+                return order && order.status === "created";
+            };
 
             $scope.$meteorSubscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
-                $scope.current_event = $meteor.object(Events, {group: group_id, active: true});
+                $scope.current_event = $meteor.object(Events, {group: group_id, active: true}, false);
 
                 $scope.$meteorSubscribe('orders', $scope.current_event._id).then(function (subsHandler) {
-                        set_order();
+                        $scope.order = $meteor.object(Orders, {
+                            event: $scope.current_event._id,
+                            user: $rootScope.currentUser._id
+                        }, false);
+                        $scope.order.isConfirmed = function () {
+                            return this.status === "confirmed";
+                        };
+                        $scope.order.isCreated = function () {
+                            return this.status === "created";
+                        };
                     }
                 );
             });
@@ -70,7 +72,11 @@ angular.module('pizzaDayApp')
             $scope.eventStatusChange = function (newEventStatus) {
                 $meteor.call('changeEventStatus', $scope.current_event._id, newEventStatus).then(
                     function (result) {
-                        console.log('status changed successfully')
+                        console.log('status changed successfully');
+                        if (result && result.delivered) {
+                            $scope.current_event.reset();
+                            $scope.order.reset();
+                        }
                     },
                     function (err) {
                         noty({text: 'Event status change error: ' + err.message, type: 'error', layout: 'topRight'});
@@ -82,6 +88,7 @@ angular.module('pizzaDayApp')
                 $meteor.call('addEvent', event).then(function (result) {
                         $('#addEventModal').modal('hide');
                         $scope.newEvent = {};
+                        $scope.current_event.reset();
                         noty({text: 'Add event success', type: 'success', layout: 'topRight', timeout: true});
                     },
                     function (err) {
@@ -109,7 +116,10 @@ angular.module('pizzaDayApp')
                 };
                 $meteor.call('orderDish', order).then(function (result) {
                         noty({text: 'Dish added to order', layout: 'topRight', type: 'success', timeout: true});
-                        if (result && result.created) set_order();
+                        if (result && result.created) {
+                            $scope.current_event.reset();
+                            $scope.order.reset();
+                        }
                     },
                     function (err) {
                         noty({text: 'Error order ' + err.message, layout: 'topRight', type: 'error'});
@@ -194,7 +204,7 @@ angular.module('pizzaDayApp')
             $scope.removeCoupon = function (coupon) {
                 $meteor.call('removeCoupon', coupon).then(function (result) {
                         console.log('success remove');
-                        set_order();
+                        $scope.order.reset();
                     },
                     function (err) {
                         console.log('error remove coupon' + err.message);
@@ -206,7 +216,7 @@ angular.module('pizzaDayApp')
                 $meteor.call('addCoupon', coupon).then(function (result) {
                         $('#addCouponModal').modal('hide');
                         $scope.newCoupon = {};
-                        set_order();
+                        $scope.order.reset();
                         noty({text: 'Success add coupon', layout: 'topRight', type: 'success', timeout: true});
                     },
                     function (err) {

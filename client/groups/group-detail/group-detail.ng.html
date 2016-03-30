@@ -1,8 +1,8 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-2 hidden-sm hidden-xs">
-            <!--<img class="media-object img-thumbnail" ng-src="{{group.image.url()}}" alt="{{group.name}}">-->
+        <div class="col-md-2 hidden-sm hidden-xs" ng-if="group.image_url">
+            <img class="media-object img-thumbnail" ng-src="{{group.image_url}}" alt="{{group.name}}">
         </div>
         <div class="col-md-10 col-xs-12"><h3>{{group.name}}</h3></div>
     </div>
@@ -69,9 +69,9 @@
                                 <div class="row">
                                     <div class="col-xs-4 col-sm-4">{{item.name}}</div>
                                     <div class="col-xs-2 col-sm-1">
-                                        <div ng-if="order.isConfirmed()">{{item.count}}</div>
+                                        <div ng-if="orderIsConfirmed(order)">{{item.count}}</div>
                                         <input class="form-control" type="number"
-                                               ng-model-options="{ updateOn: 'blur' }" ng-if="order.isCreated()"
+                                               ng-model-options="{ updateOn: 'blur' }" ng-if="orderIsCreated(order)"
                                                ng-model="item.count"
                                                ng-change="updateDishOrder(item, order)" title="Count to order">
                                     </div>
@@ -79,12 +79,12 @@
                                         {{item.price}}
                                     </div>
                                     <div class="col-xs-2 col-sm-3">{{item.total}}</div>
-                                    <div class="col-xs-2 col-sm-2" ng-if="order.isCreated()"><span
+                                    <div class="col-xs-2 col-sm-2" ng-if="orderIsCreated(order)"><span
                                             class="glyphicon glyphicon-remove-sign text-danger"
                                             ng-click="removeDishOrder(item, order)"></span></div>
                                 </div>
                             </li>
-                            <li class="list-group-item" ng-if="order.isCreated()">
+                            <li class="list-group-item" ng-if="orderIsCreated(order)">
                                 <div class="row">
                                     <div class="col-xs-2 pull-right">
                                         <button class="btn btn-primary" ng-click="confirmOrder(order)">Confirm</button>
@@ -136,7 +136,7 @@
                                     <div class="col-xs-6 col-sm-3">
                                         <div class="pull-right">
                                             <button class="btn btn-primary"
-                                                    ng-if="current_event._id && !order.isConfirmed()"
+                                                    ng-if="current_event._id && !orderIsConfirmed(order)"
                                                     ng-click="orderDish(dish)">Order
                                             </button>
                                             <a class="btn btn-info" ng-click="openEditDish(dish)" ng-hide="dish.fixed">

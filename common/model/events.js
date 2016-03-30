@@ -164,10 +164,20 @@ Meteor.methods({
         if (newStatus == "delivered") {
             Events.update(event_id, {$set: {status: newStatus, active: false}});
             //TODO send message about delivery
-            var nevent = Events.findOne({date: {$gt: event.date}});
+            //Update fixed attributes after event completion
+            var tmpDishes = Orders.aggregate([{$match: {event : event._id}},
+                {$project: {items: 1, _id: 0}}, {$unwind: "$items"},
+                {$group: {_id: "$items._id"}}]);
+            var updDishes = [];
+            tmpDishes.forEach(function (el, index, arr) {
+                updDishes.push(el._id);
+            });
+            Dishes.update({_id: {$in: updDishes}}, {$set: {fixed: false}});
+            var nevent = Events.findOne({date: {$gt: event.date}, status: "created"});
             if (nevent) {
                 Events.update(nevent._id, {$set: {active: true}});
             }
+            return {delivered: true};
         } else {
             Events.update(event_id, {$set: {status: newStatus}});
         }
@@ -230,7 +240,7 @@ Meteor.methods({
             return {created: true};
         } else {
             Utils.checkIsBelongToUser(forder.user);
-            Orders.update({_id: forder._id, "items._id": order.dish._id}, {$inc: {"items.$.count": 1}});
+            Orders.update({_id: forder._id, "items._id": order.dish._id}, {$inc: {"items.$.count": 1}}, {validate:false});
             Orders.update({_id: forder._id, "items._id": {$ne: order.dish._id}},
                 {
                     $addToSet: {
@@ -240,7 +250,7 @@ Meteor.methods({
                             count: 1
                         }
                     }
-                }
+                }, {validate:false}
             );
             Dishes.update(order.dish._id, {$set: {fixed: true}});
         }
@@ -280,6 +290,7 @@ Meteor.methods({
                             {$unwind: "$items"},
                             {$group: {_id: "$items._id", count: {$sum: "$items.count"}}}
                         ]);
+
                         context.eventSummary = {itemsToOrder: itemsToOrder};
                         emailTemplate = Handlebars.templates['owner_email'](context);
                     } else {
