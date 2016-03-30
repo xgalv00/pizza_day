@@ -125,12 +125,18 @@ angular.module('pizzaDayApp')
                     })
             };
             $scope.updateDishOrder = function (dish, order) {
-                $meteor.call('updateDishOrder', dish._id, order._id, dish.count).then(function (result) {
-                        console.log('success update dish order');
-                    },
-                    function (err) {
-                        noty({text: 'Error update dish order ' + err.message, layout: 'topRight', type: 'error'});
-                    })
+                //parseInt faster equivalent
+                dish.count >>= 0;
+                if (!(dish.count >= 1)) {
+                    noty({text: 'Count should be greater than or equal 1', layout: 'topRight', type: 'error'});
+                } else {
+                    $meteor.call('updateDishOrder', dish._id, order._id, dish.count).then(function (result) {
+                            console.log('success update dish order');
+                        },
+                        function (err) {
+                            noty({text: 'Error update dish order ' + err.message, layout: 'topRight', type: 'error'});
+                        });
+                }
             };
 
 
