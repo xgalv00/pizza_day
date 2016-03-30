@@ -165,14 +165,16 @@ Meteor.methods({
             Events.update(event_id, {$set: {status: newStatus, active: false}});
             //TODO send message about delivery
             //Update fixed attributes after event completion
-            var tmpDishes = Orders.aggregate([{$match: {event : event._id}},
-                {$project: {items: 1, _id: 0}}, {$unwind: "$items"},
-                {$group: {_id: "$items._id"}}]);
-            var updDishes = [];
-            tmpDishes.forEach(function (el, index, arr) {
-                updDishes.push(el._id);
-            });
-            Dishes.update({_id: {$in: updDishes}}, {$set: {fixed: false}});
+            if (Meteor.isServer) {
+                var tmpDishes = Orders.aggregate([{$match: {event: event._id}},
+                    {$project: {items: 1, _id: 0}}, {$unwind: "$items"},
+                    {$group: {_id: "$items._id"}}]);
+                var updDishes = [];
+                tmpDishes.forEach(function (el, index, arr) {
+                    updDishes.push(el._id);
+                });
+                Dishes.update({_id: {$in: updDishes}}, {$set: {fixed: false}});
+            }
             var nevent = Events.findOne({date: {$gt: event.date}, status: "created"});
             if (nevent) {
                 Events.update(nevent._id, {$set: {active: true}});
@@ -209,7 +211,7 @@ Meteor.methods({
         var dish = Utils.getOr404(Dishes, dish_id, "dish");
         Utils.checkIsBelongToUser(order.user);
         Orders.update(order._id, {$pull: {items: {_id: dish._id}}});
-        var fixed_count = Orders.find({event: order.event, items:{$elemMatch:{_id: dish._id}}}).count();
+        var fixed_count = Orders.find({event: order.event, items: {$elemMatch: {_id: dish._id}}}).count();
         if (fixed_count == 0) Dishes.update(dish._id, {$set: {"fixed": false}});
     },
     updateDishOrder: function (dish_id, order_id, count) {
@@ -240,7 +242,10 @@ Meteor.methods({
             return {created: true};
         } else {
             Utils.checkIsBelongToUser(forder.user);
-            Orders.update({_id: forder._id, "items._id": order.dish._id}, {$inc: {"items.$.count": 1}}, {validate:false});
+            Orders.update({
+                _id: forder._id,
+                "items._id": order.dish._id
+            }, {$inc: {"items.$.count": 1}}, {validate: false});
             Orders.update({_id: forder._id, "items._id": {$ne: order.dish._id}},
                 {
                     $addToSet: {
@@ -250,7 +255,7 @@ Meteor.methods({
                             count: 1
                         }
                     }
-                }, {validate:false}
+                }, {validate: false}
             );
             Dishes.update(order.dish._id, {$set: {fixed: true}});
         }
@@ -288,7 +293,7 @@ Meteor.methods({
                             {$match: {event: event._id, status: "confirmed", user: {$in: users}}},
                             {$project: {items: 1, _id: 0}},
                             {$unwind: "$items"},
-                            {$group: {_id: "$items._id", count: {$sum: "$items.count"}}}
+                            {$group: {_id: "$items._id", name: {$first: "$items.name"}, count: {$sum: "$items.count"}}}
                         ]);
 
                         context.eventSummary = {itemsToOrder: itemsToOrder};

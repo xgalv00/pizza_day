@@ -13,13 +13,13 @@
                 <div class="panel panel-default event-panel">
                     <div class="panel-heading">
                         <div class="row">
-                            <div class="col-xs-10" aria-controls="collapseEvent">
-                                <div class="col-xs-4">
+                            <div class="col-xs-10 col-sm-10" aria-controls="collapseEvent">
+                                <div class="col-sm-2 hidden-xs">
                                     <h4 class="panel-title">
                                         Next event
                                     </h4></div>
-                                <div class="col-xs-4">{{current_event.date | date}}</div>
-                                <div class="col-xs-4"
+                                <div class="col-xs-7 col-sm-5">{{current_event.date | date}}</div>
+                                <div class="col-xs-5 col-sm-5"
                                      ng-if="current_event.status !== 'ordered' && current_event.status !== 'delivering' || !isOwner(group)">
                                     {{current_event.status}}
                                 </div>
@@ -38,27 +38,35 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-xs-2">
-                                <button ng-if="isOwner(group)" class="btn btn-primary" type="button" data-toggle="modal"
+                            <div class="col-xs-2 col-sm-2">
+                                <button ng-if="isOwner(group)" class="btn btn-primary pull-right hidden-xs" type="button"
+                                        data-toggle="modal"
                                         data-target="#addEventModal">Create Event
                                 </button>
+                                <span ng-if="isOwner(group)" class="glyphicon glyphicon-plus text-primary pull-right visible-xs" data-toggle="modal"
+                                        data-target="#addEventModal"></span>
                             </div>
                         </div>
                     </div>
                 </div><!-- event-panel end -->
 
                 <div class="panel panel-default order-panel" ng-show="order">
-                    <div class="panel-heading cursor-pointer" data-toggle="collapse" data-parent="#accordion"
-                         data-target="#order" aria-expanded="false" aria-controls="collapseOrder">
+                    <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-10 cursor-pointer" data-toggle="collapse" data-parent="#accordion"
-                                 data-target="#order" aria-expanded="false" aria-controls="collapseEvent">
-                                <div class="col-xs-6 col-sm-4">
+                                 data-target="#order" aria-expanded="false" aria-controls="collapseOrder">
+                                <div class="col-xs-6">
                                     <h4 class="panel-title">
                                         Order
                                     </h4></div>
-                                <div class="col-xs-6 col-sm-4" title="Total order amount"><span
+                                <div class="col-xs-6" title="Total order amount"><span
                                         class="pull-right">{{order.total}}</span></div>
+                            </div>
+                            <div class="col-xs-2">
+                                <button class="btn btn-primary pull-right hidden-xs" ng-if="orderIsCreated(order)"
+                                        ng-click="confirmOrder(order)">Confirm
+                                </button>
+                                <span ng-if="orderIsCreated(order)" ng-click="confirmOrder(order)" class="glyphicon glyphicon-ok text-primary pull-right visible-xs"></span>
                             </div>
                         </div>
                     </div>
@@ -67,28 +75,24 @@
                         <ul class="list-group">
                             <li class="list-group-item" ng-repeat="item in order.items">
                                 <div class="row">
-                                    <div class="col-xs-4 col-sm-4">{{item.name}}</div>
-                                    <div class="col-xs-2 col-sm-1">
+                                    <div class="col-xs-3 col-sm-4">{{item.name}}</div>
+                                    <div class="col-xs-4 col-sm-1">
                                         <div ng-if="orderIsConfirmed(order)">{{item.count}}</div>
                                         <input class="form-control" type="number"
                                                ng-model-options="{ updateOn: 'blur' }" ng-if="orderIsCreated(order)"
                                                ng-model="item.count"
                                                ng-change="updateDishOrder(item, order)" title="Count to order">
                                     </div>
-                                    <div class="col-xs-4 col-sm-2"><span class="full-price" ng-if="item.full_price">{{item.full_price}}/</span>
-                                        {{item.price}}
+                                    <div class="hidden-xs col-sm-2">
+                                        <span class="pull-right">
+                                            <span class="full-price" ng-if="item.full_price">{{item.full_price}}/</span>
+                                            {{item.price}}
+                                        </span>
                                     </div>
-                                    <div class="col-xs-2 col-sm-3">{{item.total}}</div>
+                                    <div class="col-xs-2 col-sm-3"><span class="pull-right">{{item.total}}</span></div>
                                     <div class="col-xs-2 col-sm-2" ng-if="orderIsCreated(order)"><span
-                                            class="glyphicon glyphicon-remove-sign text-danger"
+                                            class="glyphicon glyphicon-remove-sign text-danger pull-right"
                                             ng-click="removeDishOrder(item, order)"></span></div>
-                                </div>
-                            </li>
-                            <li class="list-group-item" ng-if="orderIsCreated(order)">
-                                <div class="row">
-                                    <div class="col-xs-2 pull-right">
-                                        <button class="btn btn-primary" ng-click="confirmOrder(order)">Confirm</button>
-                                    </div>
                                 </div>
                             </li>
                         </ul>
@@ -106,14 +110,14 @@
                             </div>
                             <div class="col-xs-3">
                                 <div class="row">
-                                    <div class="col-xs-6">
+                                    <div class="col-xs-8">
                                         <select class="form-control" ng-model="dishOrd">
                                             <option value="name">Name</option>
                                             <option value="price">Price</option>
                                         </select>
                                     </div>
-                                    <div class="col-xs-6">
-                                        <button class="btn btn-primary" type="button" data-toggle="modal"
+                                    <div class="col-xs-4">
+                                        <button class="btn btn-primary pull-right" type="button" data-toggle="modal"
                                                 data-target="#addDishModal">Add Dish
                                         </button>
                                     </div>
@@ -127,13 +131,13 @@
                         <ul class="media-list list-group">
                             <li ng-repeat="dish in dishes | orderBy : dishOrd" class="list-group-item">
                                 <div class="row">
-                                    <div class="col-xs-8 col-sm-6">
+                                    <div class="col-xs-6 col-sm-8">
                                         <h4>
                                             {{dish.name}}<span class="badge pull-right">{{dish.price | currency}}</span>
                                         </h4>
                                     </div>
 
-                                    <div class="col-xs-6 col-sm-3">
+                                    <div class="col-xs-6 col-sm-4">
                                         <div class="pull-right">
                                             <button class="btn btn-primary"
                                                     ng-if="current_event._id && !orderIsConfirmed(order)"
@@ -179,7 +183,7 @@
                                         <h4>{{user | displayName}}</h4>
                                     </div>
                                     <div class="col-xs-2 col-sm-2">
-                                        <a class="btn btn-danger" title="remove" ng-click="removeUser(user)">Remove</a>
+                                        <a class="btn btn-danger pull-right" title="remove" ng-click="removeUser(user)">Remove</a>
                                     </div>
                                 </div>
                             </li>
@@ -198,7 +202,8 @@
                                 </h4>
                             </div>
                             <div class="col-xs-1">
-                                <button ng-show="coupon_dishes.length > 0" class="btn btn-primary" type="button"
+                                <button ng-show="coupon_dishes.length > 0" class="btn btn-primary pull-right"
+                                        type="button"
                                         data-toggle="modal"
                                         data-target="#addCouponModal">Add
                                 </button>
@@ -216,7 +221,8 @@
                                     </div>
                                     <div class="col-xs-12 col-sm-4">
                                         <div class="pull-right">
-                                            <a class="btn btn-danger" ng-click="removeCoupon(coupon)">Remove</a>
+                                            <a class="btn btn-danger pull-right"
+                                               ng-click="removeCoupon(coupon)">Remove</a>
                                         </div>
                                     </div>
                                 </div>
@@ -295,7 +301,7 @@
                                             ng-class="{ 'has-error' : addEventForm.addEventDate.$error.required && !addEventForm.addEventDate.$pristine }"
                                             class="input-group date" data-provide="datepicker"
                                             data-date-format="mm-dd-yyyy"
-                                            data-date-start-date="{{current_event.date | date:'MM-dd-yyyy'}}">
+                                            data-date-start-date="{{datepickerStart | date:'MM-dd-yyyy'}}">
                                         <input type="text" disabled="disabled" name="addEventDate" id="addEventDate"
                                                class="form-control" ng-model="newEvent.date" required>
                                         <span ng-show="addEventForm.addEventDate.$error.required && !addEventForm.addEventDate.$pristine"

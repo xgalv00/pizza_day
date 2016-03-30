@@ -21,6 +21,7 @@ angular.module('pizzaDayApp')
             $scope.$meteorSubscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
                 $scope.current_event = $meteor.object(Events, {group: group_id, active: true}, false);
+                $scope.datepickerStart = ($scope.current_event.date) ? $scope.current_event.date : new Date();
                 $meteor.autorun($scope, function () {
                     $scope.$meteorSubscribe('orders', $scope.getReactively('current_event._id')).then(function (subsHandler) {
                             $scope.order = $meteor.object(Orders, {
