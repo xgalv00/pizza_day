@@ -57,14 +57,14 @@ Groups.attachSchema(new SimpleSchema({
 Meteor.methods({
     addUser: function (userId, groupId) {
         let user = Utils.getOr404(Meteor.users, userId, "user");
-        let group = Utils.getOr404(Groups, userId, "group");
+        let group = Utils.getOr404(Groups, groupId, "group");
         Utils.checkIsOwner(group);
         Meteor.users.update(userId, {$addToSet: {groups: groupId}});
         Groups.update(groupId, {$addToSet: {users: userId}});
     },
     removeUser: function (userId, groupId) {
         let user = Utils.getOr404(Meteor.users, userId, "user");
-        let group = Utils.getOr404(Groups, userId, "group");
+        let group = Utils.getOr404(Groups, groupId, "group");
         Utils.checkIsOwner(group);
         Meteor.users.update(userId, {$pull: {groups: groupId}});
         Groups.update(groupId, {$pull: {users: userId}});

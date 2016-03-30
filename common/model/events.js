@@ -6,7 +6,6 @@ Orders = new Mongo.Collection("orders", {
         doc.items.forEach(function (element, index, array) {
             var dish = Dishes.findOne(element._id);
             var coupon = Coupons.findOne({dish: element._id});
-            element.name = dish.name;
             if (coupon) {
                 element.full_price = dish.price;
                 element.price = dish.price * (1 - coupon.discount / 100);
@@ -52,6 +51,11 @@ Schemas.Dish = new SimpleSchema({
     owner: {
         type: String,
         label: "Owner of dish"
+    },
+    fixed: {
+        type: Boolean,
+        label: "Is dish could be edited",
+        defaultValue: false
     }
 });
 
@@ -112,6 +116,10 @@ Schemas.Order = new SimpleSchema({
         type: String,
         label: "Dish id from menu"
     },
+    "items.$.name": {
+        type: String,
+        label: "Dish name"
+    },
     "items.$.count": {
         type: Number,
         label: "Count of dish in order",
@@ -168,7 +176,9 @@ Meteor.methods({
         var dbDish = Utils.getOr404(Dishes, dish._id, "dish");
         var group = Utils.getOr404(Groups, dbDish.group, "group");
         Utils.checkIsInGroup(group);
-        //TODO add check if dish in order, could not remove dish when ordered
+        if (dish.fixed) {
+            throw new Meteor.Error(403, "Dish ordered and could not be edited before event end");
+        }
         Dishes.update({_id: dish._id}, {$set: {name: dish.name, price: dish.price}});
     },
     addDish: function (dish) {
@@ -179,14 +189,18 @@ Meteor.methods({
     removeDish: function (dish) {
         var group = Utils.getOr404(Groups, dish.group, "group");
         Utils.checkIsInGroup(group);
+        if (dish.fixed) {
+            throw new Meteor.Error(403, "Dish ordered and could not be removed before event end");
+        }
         Dishes.remove(dish._id);
-        //TODO add check if dish in order, could not remove dish when ordered
     },
     removeDishOrder: function (dish_id, order_id) {
         var order = Utils.getOr404(Orders, order_id, "order");
         var dish = Utils.getOr404(Dishes, dish_id, "dish");
         Utils.checkIsBelongToUser(order.user);
-        Orders.update(order._id, {$pull: {"items._id": dish._id}});
+        Orders.update(order._id, {$pull: {items: {_id: dish._id}}});
+        var fixed_count = Orders.find({event: order.event, items:{$elemMatch:{_id: dish._id}}}).count();
+        if (fixed_count == 0) Dishes.update(dish._id, {$set: {"fixed": false}});
     },
     updateDishOrder: function (dish_id, order_id, count) {
         var order = Utils.getOr404(Orders, order_id, "order");
@@ -205,12 +219,14 @@ Meteor.methods({
             delete order.dish;
             order.items = [{
                 _id: dish._id,
+                name: dish.name,
                 count: 1
             }];
             //TODO replace by map with statuses
             order.user = this.userId;
             order.status = "created";
             Orders.insert(order);
+            Dishes.update(dish._id, {$set: {fixed: true}});
             return {created: true};
         } else {
             Utils.checkIsBelongToUser(forder.user);
@@ -220,11 +236,13 @@ Meteor.methods({
                     $addToSet: {
                         "items": {
                             _id: order.dish._id,
+                            name: order.dish.name,
                             count: 1
                         }
                     }
                 }
             );
+            Dishes.update(order.dish._id, {$set: {fixed: true}});
         }
 
     },

@@ -17,11 +17,8 @@ angular.module('pizzaDayApp')
                         if (!user.groups && owner_groups.length > 0) {
                             return true;
                         }
-                        // here because if will be after owner_groups will be empty array
-                        // maybe there will be problems with "magic" reactivity
                         let owner_groups_ids = [];
                         for (let group of owner_groups) {
-                            console.log(group._id);
                             owner_groups_ids.push(group._id);
                         }
                         return _.intersection(user.groups, owner_groups_ids).length != owner_groups_ids.length;
