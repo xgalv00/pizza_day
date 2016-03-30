@@ -1,6 +1,5 @@
 {
-  "sendGridUserName": "",
-  "sendGridPassword": "",
+  "smtp": "",
   "googleClientId": "",
   "googleSecret": "",
   "public": {

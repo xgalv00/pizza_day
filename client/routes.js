@@ -12,11 +12,10 @@ angular.module('pizzaDayApp')
                         controller: 'HeaderController'
                     },
                     'content': {
-                        templateUrl: 'client/views/home.ng.html',
-                        controller: 'IndexController'
+                        templateUrl: 'client/views/home.ng.html'
                     },
                     'footer': {
-                        templateUrl: 'client/views/footer.ng.html',
+                        templateUrl: 'client/views/footer.ng.html'
                     }
                 }
 
