@@ -201,7 +201,6 @@ Meteor.methods({
         Utils.checkIsInGroup(group);
         var forder = Orders.findOne({user: user, event: event._id});
         if (!forder) {
-            console.log("create order");
             var dish = order.dish;
             delete order.dish;
             order.items = [{
@@ -212,7 +211,7 @@ Meteor.methods({
             order.user = this.userId;
             order.status = "created";
             Orders.insert(order);
-            console.log("success create order")
+            return {created: true};
         } else {
             Utils.checkIsBelongToUser(forder.user);
             Orders.update({_id: forder._id, "items._id": order.dish._id}, {$inc: {"items.$.count": 1}});
@@ -226,10 +225,8 @@ Meteor.methods({
                     }
                 }
             );
-            console.log("update order");
         }
 
-        console.log("Order dish was called " + user);
     },
     confirmOrder: function (order_id) {
         var order = Utils.getOr404(Orders, order_id, "order");

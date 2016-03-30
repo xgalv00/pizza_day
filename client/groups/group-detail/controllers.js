@@ -13,21 +13,25 @@ angular.module('pizzaDayApp')
                 };
             });
 
+            function set_order() {
+                $scope.order = $meteor.object(Orders, {
+                    event: $scope.current_event._id,
+                    user: $rootScope.currentUser._id
+                });
+                $scope.order.isConfirmed = function () {
+                    return this.status === "confirmed";
+                };
+                $scope.order.isCreated = function () {
+                    return this.status === "created";
+                };
+            }
+
             $scope.$meteorSubscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
                 $scope.current_event = $meteor.object(Events, {group: group_id, active: true});
 
                 $scope.$meteorSubscribe('orders', $scope.current_event._id).then(function (subsHandler) {
-                        $scope.order = $meteor.object(Orders, {
-                            event: $scope.current_event._id,
-                            user: $rootScope.currentUser._id
-                        });
-                        $scope.order.isConfirmed = function () {
-                            return this.status === "confirmed";
-                        };
-                        $scope.order.isCreated = function () {
-                            return this.status === "created";
-                        };
+                        set_order();
                     }
                 );
             });
@@ -35,7 +39,7 @@ angular.module('pizzaDayApp')
 
             $scope.$meteorSubscribe('users').then(function (subsHandler) {
                 $scope.users = $meteor.collection(function () {
-                    return Meteor.users.find ({_id: {$in:$scope.group.users || []}});
+                    return Meteor.users.find ({_id: {$in: $scope.group.users || []}});
                 }, false);
 
             });
@@ -64,7 +68,7 @@ angular.module('pizzaDayApp')
 
             $scope.newEventStatus = "";
             $scope.newEvent = {};
-            $scope.eventStatusChange = function(newEventStatus){
+            $scope.eventStatusChange = function (newEventStatus) {
                 $meteor.call('changeEventStatus', $scope.current_event._id, newEventStatus).then(
                     function (result) {
                         console.log('status changed successfully')
@@ -106,6 +110,7 @@ angular.module('pizzaDayApp')
                 };
                 $meteor.call('orderDish', order).then(function (result) {
                         noty({text: 'Dish added to order', layout: 'topRight', type: 'success', timeout: true});
+                        if (result && result.created) set_order();
                     },
                     function (err) {
                         noty({text: 'Error order ' + err.message, layout: 'topRight', type: 'error'});
@@ -185,10 +190,11 @@ angular.module('pizzaDayApp')
             $scope.removeCoupon = function (coupon) {
                 $meteor.call('removeCoupon', coupon).then(function (result) {
                         console.log('success remove');
+                        set_order();
                     },
                     function (err) {
                         console.log('error remove coupon' + err.message);
-                        //    TODO add noty call
+                        noty({text: 'Error remove coupon ' + err.message, layout: 'topRight', type: 'error'});
                     });
             };
             $scope.addCoupon = function (coupon) {
@@ -196,7 +202,8 @@ angular.module('pizzaDayApp')
                 $meteor.call('addCoupon', coupon).then(function (result) {
                         $('#addCouponModal').modal('hide');
                         $scope.newCoupon = {};
-                        console.log('success add');
+                        set_order();
+                        noty({text: 'Success add coupon', layout: 'topRight', type: 'success', timeout: true});
                     },
                     function (err) {
                         console.log('error add coupon' + err.message);
