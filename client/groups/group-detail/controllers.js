@@ -2,7 +2,6 @@ angular.module('pizzaDayApp')
     .controller('GroupDetailController', ['$scope', '$stateParams', '$meteor', '$rootScope', '$modal',
         function ($scope, $stateParams, $meteor, $rootScope, $modal) {
 
-            //TODO add group validation
             var group_id = $stateParams.id;
 
             $scope.$meteorSubscribe('groups').then(function (subsHandler) {
@@ -83,10 +82,10 @@ angular.module('pizzaDayApp')
                 $meteor.call('addEvent', event).then(function (result) {
                         $('#addEventModal').modal('hide');
                         $scope.newEvent = {};
-                        //    TODO noty call add
+                        noty({text: 'Add event success', type: 'success', layout: 'topRight', timeout: true});
                     },
                     function (err) {
-                        console.log('error add event' + err.message);
+                        noty({text: 'Add event error: ' + err.message, type: 'error', layout: 'topRight'});
                     });
             };
             $scope.removeEvent = function (event) {
@@ -149,7 +148,7 @@ angular.module('pizzaDayApp')
                     function (result) {
                         $scope.newDish = {};
                         $('#addDishModal').modal('hide');
-                        //    TODO add noty call
+                        noty({text: 'add dish success', type: 'success', layout: 'topRight', timeout: true});
                     },
                     function (err) {
                         console.log('failed', err);
@@ -161,8 +160,7 @@ angular.module('pizzaDayApp')
                         console.log('success remove');
                     },
                     function (err) {
-                        console.log('error remove' + err.message);
-                        //    TODO add noty call
+                        noty({text: 'Error remove dish: ' + err.message, type: 'error', layout: 'topRight'});
                     })
             };
             $scope.openEditDish = function (_dish) {
@@ -222,9 +220,8 @@ angular.module('pizzaDayApp')
         $scope.editDish = function (dish_id, editedDish) {
             editedDish._id = dish_id;
             $meteor.call('editDish', editedDish).then(function (result) {
-                    console.log('success add event');
                     $modalInstance.close(result);
-                    //    TODO noty call add
+                    noty({text: 'Edit dish success', type: 'success', layout: 'topRight', timeout: true});
                 },
                 function (err) {
                     console.log('error add event' + err.message);

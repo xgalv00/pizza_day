@@ -59,11 +59,10 @@ angular.module('pizzaDayApp')
             });
         $scope.addUserToGroup = function (userId, groupId) {
             $meteor.call('addUser', userId, groupId).then(function (result) {
-                //TODO add confirmation messages for user
-                console.log('add user success');
                 $modalInstance.close(result);
+                noty({text: 'add user success', type: 'success', layout: 'topRight', timeout: true});
             }, function (err) {
-                console.log('Error adding user ' + err.message);
+                noty({text: 'Error adding user: ' + err.message, type: 'error', layout: 'topRight'});
             });
         };
         $scope.cancel = function () {
