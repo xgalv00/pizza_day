@@ -7,8 +7,7 @@ angular.module('pizzaDayApp')
             $scope.$meteorSubscribe('groups').then(function (subsHandler) {
                 $scope.group = $meteor.object(Groups, group_id);
                 $scope.isOwner = function (group) {
-                    if (!group) return false;
-                    return $rootScope.currentUser._id == group.owner._id;
+                    return group && group.owner && ($rootScope.currentUser._id == group.owner._id);
                 };
             });
             $scope.orderIsConfirmed = function (order) {
@@ -28,24 +27,19 @@ angular.module('pizzaDayApp')
                                 event: $scope.current_event._id,
                                 user: $rootScope.currentUser._id
                             }, false);
-                            $scope.order.isConfirmed = function () {
-                                return this.status === "confirmed";
-                            };
-                            $scope.order.isCreated = function () {
-                                return this.status === "created";
-                            };
                         }
                     );
                     console.log('test autorun');
-                })
+                });
             });
 
+            $meteor.autorun($scope, function () {
+                $scope.$meteorSubscribe('users').then(function (subsHandler) {
+                    $scope.users = $meteor.collection(function () {
+                        return Meteor.users.find ({_id: {$in: $scope.getReactively('group.users') || []}});
+                    }, false);
 
-            $scope.$meteorSubscribe('users').then(function (subsHandler) {
-                $scope.users = $meteor.collection(function () {
-                    return Meteor.users.find ({_id: {$in: $scope.group.users || []}});
-                }, false);
-
+                });
             });
 
             $scope.$meteorSubscribe('group_dishes', group_id).then(function (handle) {

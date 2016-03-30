@@ -26,7 +26,7 @@ angular.module('pizzaDayApp')
             }
         };
         $scope.isOwner = function (group) {
-            return $rootScope.currentUser._id == group.owner._id;
+            return group && group.owner && ($rootScope.currentUser._id == group.owner._id);
         };
         $scope.newGroup = {};
         $scope.addGroup = function (newGroup) {
