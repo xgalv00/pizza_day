@@ -21,20 +21,22 @@ angular.module('pizzaDayApp')
             $scope.$meteorSubscribe('events', group_id).then(function (subsHandler) {
                 $scope.events = $meteor.collection(Events);
                 $scope.current_event = $meteor.object(Events, {group: group_id, active: true}, false);
-
-                $scope.$meteorSubscribe('orders', $scope.current_event._id).then(function (subsHandler) {
-                        $scope.order = $meteor.object(Orders, {
-                            event: $scope.current_event._id,
-                            user: $rootScope.currentUser._id
-                        }, false);
-                        $scope.order.isConfirmed = function () {
-                            return this.status === "confirmed";
-                        };
-                        $scope.order.isCreated = function () {
-                            return this.status === "created";
-                        };
-                    }
-                );
+                $meteor.autorun($scope, function () {
+                    $scope.$meteorSubscribe('orders', $scope.getReactively('current_event._id')).then(function (subsHandler) {
+                            $scope.order = $meteor.object(Orders, {
+                                event: $scope.current_event._id,
+                                user: $rootScope.currentUser._id
+                            }, false);
+                            $scope.order.isConfirmed = function () {
+                                return this.status === "confirmed";
+                            };
+                            $scope.order.isCreated = function () {
+                                return this.status === "created";
+                            };
+                        }
+                    );
+                    console.log('test autorun');
+                })
             });
 
 
@@ -74,9 +76,10 @@ angular.module('pizzaDayApp')
                     function (result) {
                         console.log('status changed successfully');
                         if (result && result.delivered) {
-                            $scope.current_event.reset();
-                            $scope.order.reset();
+                            $scope.current_event = $meteor.object(Events, {group: group_id, active: true}, false);
+                            $scope.order = undefined;
                         }
+                        $scope.current_event.reset();
                     },
                     function (err) {
                         noty({text: 'Event status change error: ' + err.message, type: 'error', layout: 'topRight'});
@@ -88,7 +91,7 @@ angular.module('pizzaDayApp')
                 $meteor.call('addEvent', event).then(function (result) {
                         $('#addEventModal').modal('hide');
                         $scope.newEvent = {};
-                        $scope.current_event.reset();
+                        $scope.current_event = $meteor.object(Events, {group: group_id, active: true}, false);
                         noty({text: 'Add event success', type: 'success', layout: 'topRight', timeout: true});
                     },
                     function (err) {
@@ -102,6 +105,8 @@ angular.module('pizzaDayApp')
 
             $scope.confirmOrder = function (order) {
                 $meteor.call('confirmOrder', order._id).then(function (result) {
+                        $scope.current_event.reset();
+                        $scope.order.reset();
                         noty({text: 'Order successfully confirmed', layout: 'topRight', type: 'success', timeout: true});
                     },
                     function (err) {
@@ -117,8 +122,12 @@ angular.module('pizzaDayApp')
                 $meteor.call('orderDish', order).then(function (result) {
                         noty({text: 'Dish added to order', layout: 'topRight', type: 'success', timeout: true});
                         if (result && result.created) {
-                            $scope.current_event.reset();
-                            $scope.order.reset();
+                            $scope.current_event = $meteor.object(Events, {group: group_id, active: true}, false);
+                            console.log($scope.current_event._id);
+                            $scope.order = $meteor.object(Orders, {
+                                event: $scope.current_event._id,
+                                user: $rootScope.currentUser._id
+                            }, false);
                         }
                     },
                     function (err) {
