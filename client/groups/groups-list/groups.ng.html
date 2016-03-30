@@ -18,10 +18,10 @@
                                 <a class="remove-link-decoration" ui-sref="app.groupdetail({id: group._id})">
                                     <div class="media">
                                         <div class="media-left media-middle"
-                                             ng-if="group.image_url">
+                                             ng-if="group.image_url || group.image.url()">
 
                                             <img class="media-object img-thumbnail"
-                                                 ng-src="{{group.image_url}}" alt="{{group.name}}">
+                                                 ng-src="{{group.image_url || group.image.url()}}" alt="{{group.name}}">
 
                                         </div>
                                         <div class="media-body">

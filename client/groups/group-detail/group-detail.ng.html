@@ -1,8 +1,8 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-2 hidden-sm hidden-xs" ng-if="group.image_url">
-            <img class="media-object img-thumbnail" ng-src="{{group.image_url}}" alt="{{group.name}}">
+        <div class="col-md-2 hidden-sm hidden-xs" ng-if="group.image_url || group.image.url()">
+            <img class="media-object img-thumbnail" ng-src="{{group.image_url || group.image.url()}}" alt="{{group.name}}">
         </div>
         <div class="col-md-10 col-xs-12"><h3>{{group.name}}</h3></div>
     </div>
